@@ -14,6 +14,7 @@ import json
 import math
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -140,7 +141,7 @@ def main() -> None:
             raise AssertionError(("source stdout lacks dataset", name))
     source_pins = verify_source_pins(root, source)
     test = subprocess.run(
-        [str(root / ".venv/bin/python"), "-m", "pytest", "-q", "repro/tests"],
+        [sys.executable, "-m", "pytest", "-q", "repro/tests"],
         cwd=root,
         text=True,
         capture_output=True,

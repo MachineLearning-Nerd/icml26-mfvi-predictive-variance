@@ -16,7 +16,9 @@ fail-closed publication gate.
    raw source stdout/table, provenance, and the independent audit.
 
 Do not edit `upstream/`, `sources.json`, or `repro/` in Colab. Any such drift
-causes the gate to fail. GPU is unnecessary: the author path and independent
-audit are intentionally CPU-only and set one BLAS/OpenMP thread for stable
-results. The source uses all nine released UCI datasets; no subset or toy
-fallback is accepted.
+causes the gate to fail. The notebook does **not** create or depend on a virtual
+environment: it finds a Colab Python interpreter that already imports the
+required packages and passes it explicitly to every runner. GPU is unnecessary:
+the author path and independent audit are intentionally CPU-only and set one
+BLAS/OpenMP thread for stable results. The source uses all nine released UCI
+datasets; no subset or toy fallback is accepted.
