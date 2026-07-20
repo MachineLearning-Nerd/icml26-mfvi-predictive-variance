@@ -30,10 +30,10 @@ scope cannot be silently broadened. Script SHA-256:
 result SHA-256:
 `a31a2f07f7ee5732418666f94f792bba2a6a6094bf90d66728fd1bced22d2322`.
 
-Next, provision the minimal Python-3.12 source environment, then run the
-official nine-dataset entry point and the separate NumPy verifier at the same
-full scale. Do not launch either nine-dataset computation until CPU capacity
-is available.
+Next, once CPU capacity is available, run the official nine-dataset entry
+point and the separate NumPy verifier at the same full scale. Do not launch
+either nine-dataset computation while the other owner's three-core sweep is
+active.
 
 The source environment is ready at `.venv` (Python 3.12, Torch
 `2.5.1+cu121`, pandas `2.3.3`, Matplotlib `3.11.1`). Import validation confirms
