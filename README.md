@@ -33,10 +33,16 @@ The source execution needs only Torch, pandas, and Matplotlib. Bootstrap a
 Python 3.12 environment with the same CPU-compatible source path used here:
 
 ```bash
+git clone https://github.com/jamesacodgers/mfvi-cpe.git upstream
+git -C upstream checkout --detach 98604c6e558127fb756529a2c9339c77ca1a9965
 uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python --index-url https://download.pytorch.org/whl/cu121 'torch==2.5.1+cu121'
 uv pip install --python .venv/bin/python -r repro/requirements.txt
 ```
+
+The pinned upstream checkout contains all nine cached UCI inputs used by the
+official full-scale entry point. The local gate rejects a different commit,
+entry-point hash, or input hash.
 
 After verifying the pinned `upstream/` checkout and cached input hashes, the
 two required full-scale commands are deliberately separate:
