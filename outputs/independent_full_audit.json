@@ -1,0 +1,159 @@
+{
+  "methodology": {
+    "implementation": "independent NumPy/SciPy reverse-KL and BLR audit",
+    "rng_seed": 20260720,
+    "uses_all_released_cached_uci_inputs_when_uci_mode": true,
+    "uses_author_posterior_code": false
+  },
+  "mode": "full",
+  "paper": "RG7maF4bGu",
+  "pass": true,
+  "source_pins": {
+    "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+    "v1__boston__MEDV.pkl": "b8dafe36623f3460b812a8b63c24c7a820f6075314bc14eb2327a8c87b07b25a",
+    "v1__concrete__ConcreteCompressiveStrength.pkl": "a5ae2678b6902fe8af36d24422726330f825f4d5fb506bf3e9dbb856df469233",
+    "v1__energy__Y1.pkl": "1edb5edc0317eae59b4e04cda1d281c6f263c993b0b9fbecbc282c522d362061",
+    "v1__kin8nm___default.pkl": "daf0910c5d534c39faf3d921881d9965d86c4de7f16c4da2f6101efea46e60fe",
+    "v1__naval__kMc.pkl": "3da44b496e450fa1ff4dab65fd873120421fb01bd12a70be1b404f5f0c9c2f2a",
+    "v1__power__PE.pkl": "7decad58c92b5926206e7e8ee29dc1dfbf1fc2fccbc082441abe6418bd657687",
+    "v1__protein__RMSD.pkl": "f5b672d6150360ea6489fdcb48f12f2026401235ef30621c4e7a0515aea67981",
+    "v1__wine__class.pkl": "cbc18a58a8112b72989a5c1a8f30f6f9fdba29b83abfdf894a617f6b815f71e2",
+    "v1__yacht__residuary_resistance.pkl": "0a86bb49fd52d5484368e281f8ac87718090c2a5c2fcf210b9141cfc85530286"
+  },
+  "synthetic": {
+    "axis_aligned_equality_control": {
+      "conserved_precision_trace_error": 0.0,
+      "d": 11,
+      "empirical_mfvi_minus_exact_predictive_variance": 0.0,
+      "first_pc_mfvi_minus_exact_predictive_variance": 0.0,
+      "marginal_diagonal_reverse_kl_excess": 0.0,
+      "mfvi_minus_exact_posterior_trace": 0.0,
+      "n": 22,
+      "optimizer_log_diagonal_error": 0.0,
+      "reverse_kl_stationarity_error": 2.220446049250313e-16
+    },
+    "maximum_trace_gap": -0.000458023816002061,
+    "minimum_empirical_gap": 5.725297700025641e-08,
+    "minimum_first_pc_gap": 9.375506445419605e-07,
+    "nonspherical_prior_scope_control": {
+      "conserved_precision_trace_error": 0.0,
+      "d": 7,
+      "empirical_mfvi_minus_exact_predictive_variance": 1.407977138112866e-07,
+      "first_pc_mfvi_minus_exact_predictive_variance": -0.039114482356105526,
+      "marginal_diagonal_reverse_kl_excess": 1.4280246668718632e-05,
+      "mfvi_minus_exact_posterior_trace": -0.11285928989110829,
+      "n": 47,
+      "reverse_kl_stationarity_error": 1.1102230246251565e-16
+    },
+    "pass": true,
+    "system_count": 144
+  },
+  "uci": {
+    "dataset_count": 9,
+    "maximum_trace_gap": -8.480897643170174e-09,
+    "minimum_empirical_gap": 1.035265794912767e-14,
+    "minimum_first_pc_gap": 4.6049666600837724e-08,
+    "pass": true,
+    "rows": [
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 13,
+        "dataset_file": "v1__boston__MEDV.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 1.2568396405584402e-08,
+        "first_pc_mfvi_minus_exact_predictive_variance": 1.6569597751239955e-05,
+        "marginal_diagonal_reverse_kl_excess": 9.211835523209118,
+        "mfvi_minus_exact_posterior_trace": -0.0006359608581228834,
+        "n": 506,
+        "reverse_kl_stationarity_error": 3.885780586188048e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 8,
+        "dataset_file": "v1__concrete__ConcreteCompressiveStrength.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 3.405635143005005e-09,
+        "first_pc_mfvi_minus_exact_predictive_variance": 5.4555314795300275e-06,
+        "marginal_diagonal_reverse_kl_excess": 11.78134251161029,
+        "mfvi_minus_exact_posterior_trace": -0.0003507804197275151,
+        "n": 1030,
+        "reverse_kl_stationarity_error": 3.885780586188048e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 9,
+        "dataset_file": "v1__energy__Y1.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 1.3065189302222692e-05,
+        "first_pc_mfvi_minus_exact_predictive_variance": 1.0086583672614179e-05,
+        "marginal_diagonal_reverse_kl_excess": 38460.74381636094,
+        "mfvi_minus_exact_posterior_trace": -1.0034065384116535,
+        "n": 768,
+        "reverse_kl_stationarity_error": 2.220446049250313e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 8,
+        "dataset_file": "v1__kin8nm___default.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 1.035265794912767e-14,
+        "first_pc_mfvi_minus_exact_predictive_variance": 4.6049666600837724e-08,
+        "marginal_diagonal_reverse_kl_excess": 1.7603369713015127e-06,
+        "mfvi_minus_exact_posterior_trace": -8.480897643170174e-09,
+        "n": 8192,
+        "reverse_kl_stationarity_error": 4.440892098500626e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 17,
+        "dataset_file": "v1__naval__kMc.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 9.826510325112572e-07,
+        "first_pc_mfvi_minus_exact_predictive_variance": 7.766412169643418e-07,
+        "marginal_diagonal_reverse_kl_excess": 699623.580555613,
+        "mfvi_minus_exact_posterior_trace": -1.1726957421621067,
+        "n": 11934,
+        "reverse_kl_stationarity_error": 4.440892098500626e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 4,
+        "dataset_file": "v1__power__PE.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 9.917769331671052e-12,
+        "first_pc_mfvi_minus_exact_predictive_variance": 6.166210454210029e-07,
+        "marginal_diagonal_reverse_kl_excess": 2.505692810270695,
+        "mfvi_minus_exact_posterior_trace": -9.489321696651031e-06,
+        "n": 9568,
+        "reverse_kl_stationarity_error": 3.3306690738754696e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 9,
+        "dataset_file": "v1__protein__RMSD.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 3.958364710287218e-11,
+        "first_pc_mfvi_minus_exact_predictive_variance": 1.8449942710791669e-07,
+        "marginal_diagonal_reverse_kl_excess": 400.6848130652468,
+        "mfvi_minus_exact_posterior_trace": -0.0001810160180972426,
+        "n": 45730,
+        "reverse_kl_stationarity_error": 3.3306690738754696e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 13,
+        "dataset_file": "v1__wine__class.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 7.703889022133399e-08,
+        "first_pc_mfvi_minus_exact_predictive_variance": 4.44883959153228e-05,
+        "marginal_diagonal_reverse_kl_excess": 5.918488053317276,
+        "mfvi_minus_exact_posterior_trace": -0.0013712922459405872,
+        "n": 178,
+        "reverse_kl_stationarity_error": 4.440892098500626e-16
+      },
+      {
+        "conserved_precision_trace_error": 0.0,
+        "d": 6,
+        "dataset_file": "v1__yacht__residuary_resistance.pkl",
+        "empirical_mfvi_minus_exact_predictive_variance": 1.3862020472246527e-07,
+        "first_pc_mfvi_minus_exact_predictive_variance": 1.3378139058899163e-05,
+        "marginal_diagonal_reverse_kl_excess": 59.192650859557546,
+        "mfvi_minus_exact_posterior_trace": -0.004269502305461405,
+        "n": 308,
+        "reverse_kl_stationarity_error": 3.885780586188048e-16
+      }
+    ]
+  }
+}

@@ -66,8 +66,18 @@ A real premature-gate control was run: it rejected the absent
 
 ## Publication state
 
-Not gate-complete. Not queued. Do not start a publisher; publication must use
-the shared backlog only after a public GitHub push.
+The returned Colab evidence archive SHA-256 is
+`52a199c2c2bce9b84d312849e088cf44cdeaecd5812503286d33aba5065406b9`.
+Its complete nine-dataset source outputs and independent audit were extracted
+without overwriting any local full-scale result. The local fail-closed readback
+recomputed every artifact hash, source/data pin, source/independent trace
+comparison, and test suite; it passed 4/4 tests. The final publication gate
+also passes: 11 hash-bound evidence records (bundle SHA-256
+`136bbe69d1ad591b8c3702d6b6a228e1504c7e9754d666b3a253d6c49e2a482d`),
+required Trackio tags, a single pinned conclusion marker, and hygiene checks.
+
+Gate-complete but not yet queued. Next: public GitHub push, then canonical
+shared-backlog insertion. Do not start a publisher directly.
 
 ## External full-scale runner
 

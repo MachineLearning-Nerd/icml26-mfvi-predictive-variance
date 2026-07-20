@@ -1,0 +1,101 @@
+cpu
+==================================================
+Boston
+dataset boston
+n 506
+d 13
+avg_train_mfvi_post_var 0.00036722123555021647
+avg_train_true_post_var 0.000367192586607782
+avg_test_mfvi_post_var 0.0003977106137842585
+avg_test_true_post_var 0.0004740340147122865
+trace_S_opt 0.0002574206451363554
+trace_Sigma 0.0008933815032592348
+==================================================
+Energy
+dataset energy
+n 768
+d 9
+avg_train_mfvi_post_var 0.00016759463859748302
+avg_train_true_post_var 0.00014887660099580907
+avg_test_mfvi_post_var 0.0001672133270164248
+avg_test_true_post_var 0.000151262544468335
+trace_S_opt 0.00011733875699193578
+trace_Sigma 1.003523877122345
+==================================================
+Concrete
+dataset concrete
+n 1030
+d 8
+avg_train_mfvi_post_var 0.00011095546311278886
+avg_train_true_post_var 0.00011094802158658049
+avg_test_mfvi_post_var 0.0001126690882457866
+avg_test_true_post_var 0.00011812528328685606
+trace_S_opt 7.774462833209189e-05
+trace_Sigma 0.0004285250480596049
+==================================================
+Yacht
+dataset yacht
+n 308
+d 6
+avg_train_mfvi_post_var 0.0002790567274078693
+avg_train_true_post_var 0.00027879089148110156
+avg_test_mfvi_post_var 0.000293279527287937
+avg_test_true_post_var 0.00028268619371715076
+trace_S_opt 0.00019543337350987346
+trace_Sigma 0.004464935678971663
+==================================================
+Wine
+dataset wine
+n 178
+d 13
+avg_train_mfvi_post_var 0.0010483018689799672
+avg_train_true_post_var 0.001048115755532113
+avg_test_mfvi_post_var 0.0010088280145482045
+avg_test_true_post_var 0.0012663347153545558
+trace_S_opt 0.000734421784082791
+trace_Sigma 0.0021057140300233764
+==================================================
+Protein
+dataset protein
+n 45730
+d 9
+avg_train_mfvi_post_var 2.811620489938043e-06
+avg_train_true_post_var 2.811539656077926e-06
+avg_test_mfvi_post_var 2.9320152458870876e-06
+avg_test_true_post_var 3.033319817489627e-06
+trace_S_opt 1.968116082117727e-06
+trace_Sigma 0.00018298413417928926
+==================================================
+Kin8nm
+dataset kin8nm
+n 8192
+d 8
+avg_train_mfvi_post_var 1.3951841726063257e-05
+avg_train_true_post_var 1.3951841692769482e-05
+avg_test_mfvi_post_var 1.418009214670967e-05
+avg_test_true_post_var 1.4200505888453817e-05
+trace_S_opt 9.76680531462869e-06
+trace_Sigma 9.77528621227186e-06
+==================================================
+Power
+dataset power
+n 9568
+d 4
+avg_train_mfvi_post_var 5.972814732407452e-06
+avg_train_true_post_var 5.9727940737153005e-06
+avg_test_mfvi_post_var 5.875141367519025e-06
+avg_test_true_post_var 5.99787503278263e-06
+trace_S_opt 4.181034617922322e-06
+trace_Sigma 1.3670356314573419e-05
+==================================================
+Naval
+dataset naval
+n 11934
+d 17
+avg_train_mfvi_post_var 1.8126920650190716e-05
+avg_train_true_post_var 1.664056137151979e-05
+avg_test_mfvi_post_var 1.8080371840582166e-05
+avg_test_true_post_var 1.6740113210664526e-05
+trace_S_opt 1.8094954018165303
+trace_Sigma 2.982191143990737
+Wrote LaTeX table to figs/uci/tr_inequ_table.txt

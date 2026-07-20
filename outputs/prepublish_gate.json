@@ -1,0 +1,86 @@
+{
+  "artifact_sha256": {
+    "independent_full_audit": "57812709227f6a96ac4e035f6de6f8bdaedc3479fefff145e2ae37557b4c3f48",
+    "official_run_provenance": "e8276cb41c0ea9e22e11d38534fa0fa344ac2a0378fd109da2d8f85fb8532188",
+    "official_stdout": "91ef22ef4dd3cff0219083d742d3ce310b1c3256adecbd835f8c573e1ff32db0",
+    "official_trace_table": "3da7647942ede28be9857242f6a80dc9461ef8975acd39c361b35e0be8b198a3"
+  },
+  "maximum_points": 6,
+  "official_claim_count": 3,
+  "official_run_provenance": {
+    "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+    "uci_tr_inequ_sha256": "4c0968b190e69064e663732c76d1669b48404fd47bddfa633b0a510eaeb2ac4a"
+  },
+  "paper": "RG7maF4bGu",
+  "publication_gate_passed": true,
+  "source_independent_trace_comparisons": {
+    "boston": {
+      "independent_minus_trace": -0.0006359608581228834,
+      "source_exact_trace": 0.00089338,
+      "source_mfvi_trace": 0.00025742,
+      "source_minus_exact_trace": -0.0006359600000000001
+    },
+    "concrete": {
+      "independent_minus_trace": -0.0003507804197275151,
+      "source_exact_trace": 0.00042853,
+      "source_mfvi_trace": 7.7745e-05,
+      "source_minus_exact_trace": -0.000350785
+    },
+    "energy": {
+      "independent_minus_trace": -1.0034065384116535,
+      "source_exact_trace": 1.0035,
+      "source_mfvi_trace": 0.00011734,
+      "source_minus_exact_trace": -1.00338266
+    },
+    "kin8nm": {
+      "independent_minus_trace": -8.480897643170174e-09,
+      "source_exact_trace": 9.7753e-06,
+      "source_mfvi_trace": 9.7668e-06,
+      "source_minus_exact_trace": -8.500000000000003e-09
+    },
+    "naval": {
+      "independent_minus_trace": -1.1726957421621067,
+      "source_exact_trace": 2.9822,
+      "source_mfvi_trace": 1.8095,
+      "source_minus_exact_trace": -1.1727
+    },
+    "power": {
+      "independent_minus_trace": -9.489321696651031e-06,
+      "source_exact_trace": 1.367e-05,
+      "source_mfvi_trace": 4.181e-06,
+      "source_minus_exact_trace": -9.489e-06
+    },
+    "protein": {
+      "independent_minus_trace": -0.0001810160180972426,
+      "source_exact_trace": 0.00018298,
+      "source_mfvi_trace": 1.9681e-06,
+      "source_minus_exact_trace": -0.0001810119
+    },
+    "wine": {
+      "independent_minus_trace": -0.0013712922459405872,
+      "source_exact_trace": 0.0021057,
+      "source_mfvi_trace": 0.00073442,
+      "source_minus_exact_trace": -0.00137128
+    },
+    "yacht": {
+      "independent_minus_trace": -0.004269502305461405,
+      "source_exact_trace": 0.0044649,
+      "source_mfvi_trace": 0.00019543,
+      "source_minus_exact_trace": -0.00426947
+    }
+  },
+  "source_pins": {
+    "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+    "official_uci_script_sha256": "4c0968b190e69064e663732c76d1669b48404fd47bddfa633b0a510eaeb2ac4a",
+    "v1__boston__MEDV.pkl": "b8dafe36623f3460b812a8b63c24c7a820f6075314bc14eb2327a8c87b07b25a",
+    "v1__concrete__ConcreteCompressiveStrength.pkl": "a5ae2678b6902fe8af36d24422726330f825f4d5fb506bf3e9dbb856df469233",
+    "v1__energy__Y1.pkl": "1edb5edc0317eae59b4e04cda1d281c6f263c993b0b9fbecbc282c522d362061",
+    "v1__kin8nm___default.pkl": "daf0910c5d534c39faf3d921881d9965d86c4de7f16c4da2f6101efea46e60fe",
+    "v1__naval__kMc.pkl": "3da44b496e450fa1ff4dab65fd873120421fb01bd12a70be1b404f5f0c9c2f2a",
+    "v1__power__PE.pkl": "7decad58c92b5926206e7e8ee29dc1dfbf1fc2fccbc082441abe6418bd657687",
+    "v1__protein__RMSD.pkl": "f5b672d6150360ea6489fdcb48f12f2026401235ef30621c4e7a0515aea67981",
+    "v1__wine__class.pkl": "cbc18a58a8112b72989a5c1a8f30f6f9fdba29b83abfdf894a617f6b815f71e2",
+    "v1__yacht__residuary_resistance.pkl": "0a86bb49fd52d5484368e281f8ac87718090c2a5c2fcf210b9141cfc85530286"
+  },
+  "tests": "....                                                                     [100%]\n4 passed in 1.07s"
+}
