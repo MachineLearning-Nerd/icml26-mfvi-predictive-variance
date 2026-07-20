@@ -1,0 +1,21 @@
+{
+  "challenge_claims_sha256": "af5ab2d62f786ae36861957cbd08b4188f6d4c86e67152becc661a9c5bbb9d57",
+  "official_repository": "https://github.com/jamesacodgers/mfvi-cpe.git",
+  "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+  "openreview_id": "RG7maF4bGu",
+  "primary_arxiv": "2606.25745",
+  "primary_source_tar_sha256": "5a5e8ba755d451526420170011c78e278fa472afc4325acbdc98858c420ef157",
+  "primary_tex_sha256": "2dfae2872507edad0b225121891ec1f24d76d4bf10a5ab6c1cdb63eeb490b1da",
+  "appendix_tex_sha256": "ca1d1d9546159520cb3337ca61b04b42d14516fedeeaa4a7ac21dde6081c57e9",
+  "uci_data_sha256": {
+    "v1__boston__MEDV.pkl": "b8dafe36623f3460b812a8b63c24c7a820f6075314bc14eb2327a8c87b07b25a",
+    "v1__concrete__ConcreteCompressiveStrength.pkl": "a5ae2678b6902fe8af36d24422726330f825f4d5fb506bf3e9dbb856df469233",
+    "v1__energy__Y1.pkl": "1edb5edc0317eae59b4e04cda1d281c6f263c993b0b9fbecbc282c522d362061",
+    "v1__kin8nm___default.pkl": "daf0910c5d534c39faf3d921881d9965d86c4de7f16c4da2f6101efea46e60fe",
+    "v1__naval__kMc.pkl": "3da44b496e450fa1ff4dab65fd873120421fb01bd12a70be1b404f5f0c9c2f2a",
+    "v1__power__PE.pkl": "7decad58c92b5926206e7e8ee29dc1dfbf1fc2fccbc082441abe6418bd657687",
+    "v1__protein__RMSD.pkl": "f5b672d6150360ea6489fdcb48f12f2026401235ef30621c4e7a0515aea67981",
+    "v1__wine__class.pkl": "cbc18a58a8112b72989a5c1a8f30f6f9fdba29b83abfdf894a617f6b815f71e2",
+    "v1__yacht__residuary_resistance.pkl": "0a86bb49fd52d5484368e281f8ac87718090c2a5c2fcf210b9141cfc85530286"
+  }
+}

@@ -1,0 +1,6 @@
+.venv/
+.trackio/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+upstream/
