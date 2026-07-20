@@ -68,3 +68,15 @@ A real premature-gate control was run: it rejected the absent
 
 Not gate-complete. Not queued. Do not start a publisher; publication must use
 the shared backlog only after a public GitHub push.
+
+## External full-scale runner
+
+The user may run the required full-scale gate in Google Colab using the
+repository's `colab/mfvi_full_gate_colab.ipynb` and the separately generated
+`../../colab-artifacts/RG7maF4bGu-colab-bundle.tar.gz`. That bundle includes
+the detached author checkout (with Git metadata), all nine cached UCI inputs,
+the source/entry-point hash pins, and the independent gate. It excludes local
+virtual environments, Trackio state, cached results, and unrelated upstream
+figures. The notebook returns an outputs-only archive; accept it only if its
+included `prepublish_gate.json` passes every exact provenance, test, and
+source-versus-independent check again locally.
