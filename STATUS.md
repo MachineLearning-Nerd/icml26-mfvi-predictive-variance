@@ -76,8 +76,10 @@ also passes: 11 hash-bound evidence records (bundle SHA-256
 `136bbe69d1ad591b8c3702d6b6a228e1504c7e9754d666b3a253d6c49e2a482d`),
 required Trackio tags, a single pinned conclusion marker, and hygiene checks.
 
-Gate-complete but not yet queued. Next: public GitHub push, then canonical
-shared-backlog insertion. Do not start a publisher directly.
+Public GitHub repository: `MachineLearning-Nerd/icml26-repro-RG7maF4bGu-mfvi-predictive-variance`
+at first-push evidence commit `5014a6ec22cf5da370fc9eb4864be7d987c606b4`.
+The canonical shared backlog accepted `RG7maF4bGu` atomically. Await the shared
+drain's public Space creation and readback; do not start a competing publisher.
 
 ## External full-scale runner
 
