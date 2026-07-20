@@ -60,13 +60,36 @@ def verify_source_pins(root: Path, source: dict[str, Any]) -> dict[str, str]:
     commit = subprocess.check_output(["git", "-C", str(upstream), "rev-parse", "HEAD"], text=True).strip()
     if commit != source["official_repository_commit"]:
         raise AssertionError(("official commit mismatch", commit))
-    verified = {"official_repository_commit": commit}
+    script_sha = sha256(upstream / "uci_tr_inequ.py")
+    if script_sha != source["official_uci_script_sha256"]:
+        raise AssertionError(("official entry-point hash mismatch", script_sha))
+    verified = {
+        "official_repository_commit": commit,
+        "official_uci_script_sha256": script_sha,
+    }
     for filename, expected in source["uci_data_sha256"].items():
         actual = sha256(upstream / "uci_data" / filename)
         if actual != expected:
             raise AssertionError(("UCI input hash mismatch", filename, actual, expected))
         verified[filename] = actual
     return verified
+
+
+def verify_official_run_provenance(path: Path, source: dict[str, Any]) -> dict[str, str]:
+    """Require the artifacts to declare the same pinned source they were run from."""
+    values: dict[str, str] = {}
+    for line in path.read_text().splitlines():
+        key, separator, value = line.partition("=")
+        if not separator or not key or not value or key in values:
+            raise AssertionError(("malformed official run provenance", line))
+        values[key] = value
+    expected = {
+        "official_repository_commit": source["official_repository_commit"],
+        "uci_tr_inequ_sha256": source["official_uci_script_sha256"],
+    }
+    if values != expected:
+        raise AssertionError(("official run provenance mismatch", values, expected))
+    return values
 
 
 def main() -> None:
@@ -80,7 +103,8 @@ def main() -> None:
     audit_path = outputs / "independent_full_audit.json"
     table_path = outputs / "official_uci_trace_table.tex"
     stdout_path = outputs / "official_uci_stdout.txt"
-    for path in (audit_path, table_path, stdout_path):
+    official_provenance_path = outputs / "official_uci_provenance.txt"
+    for path in (audit_path, table_path, stdout_path, official_provenance_path):
         if not path.is_file() or path.stat().st_size == 0:
             raise AssertionError(("missing required full-scale artifact", str(path)))
 
@@ -92,6 +116,7 @@ def main() -> None:
     if audit.get("uci", {}).get("pass") is not True or audit["uci"].get("dataset_count") != 9:
         raise AssertionError("nine-dataset independent audit absent or failed")
 
+    official_run_provenance = verify_official_run_provenance(official_provenance_path, source)
     source_rows = parse_source_table(table_path)
     independent_rows = {Path(row["dataset_file"]).stem.split("__")[1]: row for row in audit["uci"]["rows"]}
     if set(independent_rows) != set(source_rows):
@@ -129,10 +154,12 @@ def main() -> None:
         "maximum_points": 6,
         "publication_gate_passed": True,
         "source_pins": source_pins,
+        "official_run_provenance": official_run_provenance,
         "source_independent_trace_comparisons": comparisons,
         "artifact_sha256": {
             "official_stdout": sha256(stdout_path),
             "official_trace_table": sha256(table_path),
+            "official_run_provenance": sha256(official_provenance_path),
             "independent_full_audit": sha256(audit_path),
         },
         "tests": test.stdout.strip(),

@@ -2,6 +2,7 @@
   "challenge_claims_sha256": "af5ab2d62f786ae36861957cbd08b4188f6d4c86e67152becc661a9c5bbb9d57",
   "official_repository": "https://github.com/jamesacodgers/mfvi-cpe.git",
   "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+  "official_uci_script_sha256": "4c0968b190e69064e663732c76d1669b48404fd47bddfa633b0a510eaeb2ac4a",
   "openreview_id": "RG7maF4bGu",
   "primary_arxiv": "2606.25745",
   "primary_source_tar_sha256": "5a5e8ba755d451526420170011c78e278fa472afc4325acbdc98858c420ef157",

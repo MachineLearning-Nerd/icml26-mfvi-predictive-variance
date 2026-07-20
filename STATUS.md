@@ -18,6 +18,14 @@ tar, primary TeX, appendix TeX, and all nine cached UCI inputs are SHA-256
 bound in `sources.json`. The released full-scale entry point is
 `upstream/uci_tr_inequ.py`; it uses all nine cached datasets.
 
+The source entry point itself is pinned at SHA-256
+`4c0968b190e69064e663732c76d1669b48404fd47bddfa633b0a510eaeb2ac4a`.
+The official wrapper records that hash and the detached commit beside its
+outputs; the publication gate now rejects missing, malformed, stale, or
+source-drifted run provenance before it can emit a manifest. The hardened
+gate and verifier test suite passes 4/4; a fresh premature-gate control still
+fails closed without writing a manifest.
+
 The independent NumPy/SciPy synthetic gate has passed twice byte-for-byte.
 It covers 144 non-axis-aligned spherical-prior BLR systems (dimensions 2--64),
 with minimum empirical predictive-variance gap `5.7253e-8`, minimum first-PC
