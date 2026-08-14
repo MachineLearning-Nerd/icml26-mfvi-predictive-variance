@@ -1,0 +1,24 @@
+{
+  "openreview_id": "RG7maF4bGu",
+  "paper": "Gaussian Mean Field Variational Inference can Overestimate Predictive Variance",
+  "claims": [
+    {
+      "id": "C1",
+      "anchor": "Bayesian linear regression posterior comparison",
+      "text": "MFVI can underestimate posterior variance in parameter space while overestimating predictive variance relative to the exact posterior.",
+      "scope": "verified_scoped_spherical_prior"
+    },
+    {
+      "id": "C2",
+      "anchor": "Expected predictive variance on the training distribution",
+      "text": "For test points drawn from the training distribution, MFVI's expected predictive variance exceeds the exact posterior's.",
+      "scope": "verified_scoped_spherical_prior_and_empirical_training_distribution"
+    },
+    {
+      "id": "C3",
+      "anchor": "Concentrated directions",
+      "text": "The predictive-variance overestimation occurs in directions where the training data concentrates.",
+      "scope": "verified_scoped_first_principal_direction"
+    }
+  ]
+}

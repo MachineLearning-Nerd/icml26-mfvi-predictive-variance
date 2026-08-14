@@ -1,9 +1,30 @@
 {
-  "challenge_claims_sha256": "af5ab2d62f786ae36861957cbd08b4188f6d4c86e67152becc661a9c5bbb9d57",
+  "paper": {
+    "title": "Gaussian Mean Field Variational Inference can Overestimate Predictive Variance",
+    "authors": [
+      "James Odgers",
+      "Ben Riegler",
+      "Siddharth Swaroop",
+      "Vincent Fortuin"
+    ],
+    "venue": "ICML 2026",
+    "openreview_id": "RG7maF4bGu",
+    "openreview_url": "https://openreview.net/forum?id=RG7maF4bGu",
+    "arxiv_id": "2606.25745",
+    "arxiv_version": "v1",
+    "arxiv_url": "https://arxiv.org/abs/2606.25745",
+    "official_claim_count": 3,
+    "possible_points": 6
+  },
+  "challenge_contract": {
+    "snapshot_sha256": "af5ab2d62f786ae36861957cbd08b4188f6d4c86e67152becc661a9c5bbb9d57",
+    "local_path": "repro/configs/live_claims.json",
+    "local_sha256": "6b644fa280ddebeac75d0888e13134933ee7fe26366c34cb328b28c381b0cb5b"
+  },
   "official_repository": "https://github.com/jamesacodgers/mfvi-cpe.git",
   "official_repository_commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+  "official_uci_script": "upstream/uci_tr_inequ.py",
   "official_uci_script_sha256": "4c0968b190e69064e663732c76d1669b48404fd47bddfa633b0a510eaeb2ac4a",
-  "openreview_id": "RG7maF4bGu",
   "primary_arxiv": "2606.25745",
   "primary_source_tar_sha256": "5a5e8ba755d451526420170011c78e278fa472afc4325acbdc98858c420ef157",
   "primary_tex_sha256": "2dfae2872507edad0b225121891ec1f24d76d4bf10a5ab6c1cdb63eeb490b1da",
@@ -18,5 +39,52 @@
     "v1__protein__RMSD.pkl": "f5b672d6150360ea6489fdcb48f12f2026401235ef30621c4e7a0515aea67981",
     "v1__wine__class.pkl": "cbc18a58a8112b72989a5c1a8f30f6f9fdba29b83abfdf894a617f6b815f71e2",
     "v1__yacht__residuary_resistance.pkl": "0a86bb49fd52d5484368e281f8ac87718090c2a5c2fcf210b9141cfc85530286"
+  },
+  "arxiv_source": {
+    "archive_sha256": "5a5e8ba755d451526420170011c78e278fa472afc4325acbdc98858c420ef157",
+    "local_root": "source/arxiv",
+    "file_count": 30,
+    "main_tex": "source/arxiv/main.tex",
+    "main_tex_sha256": "2dfae2872507edad0b225121891ec1f24d76d4bf10a5ab6c1cdb63eeb490b1da",
+    "appendix_tex": "source/arxiv/app_proofs.tex",
+    "appendix_tex_sha256": "ca1d1d9546159520cb3337ca61b04b42d14516fedeeaa4a7ac21dde6081c57e9",
+    "compiler": "pdflatex (TeX Live metadata in 00README.json)",
+    "author_executable_files": []
+  },
+  "source_artifact": {
+    "path": "docs/primary.pdf",
+    "version": "arXiv v1",
+    "sha256": "5347414ef5e950966cc90ef9567da99aaa89276b8946259b717af3639a7cab59",
+    "pages": 22,
+    "license": "CC BY 4.0 as listed by the OpenReview record"
+  },
+  "retained_artifacts": {
+    "colab_archive": {
+      "path": "outputs/colab/RG7maF4bGu-colab-results.tar.gz",
+      "sha256": "52a199c2c2bce9b84d312849e088cf44cdeaecd5812503286d33aba5065406b9",
+      "members": [
+        "outputs/independent_full_audit.json",
+        "outputs/official_uci_stdout.txt",
+        "outputs/official_uci_trace_table.tex",
+        "outputs/prepublish_gate.json"
+      ]
+    },
+    "independent_full_audit_sha256": "57812709227f6a96ac4e035f6de6f8bdaedc3479fefff145e2ae37557b4c3f48",
+    "official_stdout_sha256": "91ef22ef4dd3cff0219083d742d3ce310b1c3256adecbd835f8c573e1ff32db0",
+    "official_trace_table_sha256": "3da7647942ede28be9857242f6a80dc9461ef8975acd39c361b35e0be8b198a3",
+    "official_provenance_sha256": "e8276cb41c0ea9e22e11d38534fa0fa344ac2a0378fd109da2d8f85fb8532188",
+    "colab_gate_sha256": "8d52b9b1a6e0a7ced3fd39b29863267389b9a5b3af59b7281e36d99e37c28207",
+    "prepublish_gate_sha256": "8d52b9b1a6e0a7ced3fd39b29863267389b9a5b3af59b7281e36d99e37c28207",
+    "local_readback_gate_sha256": "bfd5a29f0b3b545ab8a79dc80a218eb67e7078c3c1b02fe0422de3601d48c5ba"
+  },
+  "clean_room_audit": {
+    "independent_implementation": "repro/src/verify_mfvi.py uses NumPy/SciPy and does not import the author posterior implementation",
+    "full_scale_status": "official nine-dataset output and independent nine-dataset audit are retained and cross-checked",
+    "publication_gate_status": "the lightweight publication gate validates retained artifacts; it does not rerun the nine-dataset computation",
+    "not_reproduced_from_clone": [
+      "the external official checkout and nine cached UCI inputs",
+      "formal proof checking",
+      "bitwise recreation of the Colab/author environment"
+    ]
   }
 }

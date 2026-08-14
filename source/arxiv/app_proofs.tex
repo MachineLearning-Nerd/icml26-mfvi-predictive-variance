@@ -1,0 +1,410 @@
+
+
+
+
+\subsection{Optimal Variational Parameters} \label{ap:variational-proofs}
+In this section we restate and  prove the optimal variational parameters. 
+
+\begin{lemma*}[Optimal variational mean] 
+    For any positive definite posterior covariance, the optimal mean is the mean of the posterior: 
+    \begin{equation} 
+        m^* = \mu.
+    \end{equation}
+\end{lemma*}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:optimal_var_mean}]
+    If $\posterior$ is positive definite, then $\posterior^{-1}$ is also positive definite. By definition 
+    \begin{equation}
+        z^\top  \posterior^{-1}z \geq 0,
+    \end{equation}
+    with the minimum being achieved when $z = 0$. This will be achieved when $m = \mu$.
+\end{proof}
+
+
+
+
+\begin{lemma*} [Optimal variational posterior eigenvalues are harmonic means] 
+    The optimal variational covariance, $S^*$, is given by the condition
+    \begin{equation}
+        \frac{1}{d_p^*} = {e_p^\top \posterior^{-1} e_p} = {\sum_{q=1}^P \frac{w_{pq}}{\delta_q}} \quad \forall \; p \in \{1, \dots P\},
+    \end{equation}
+    where $\sum_{q=1}^P w_{pq} = 1 \; \forall \; p \in \{1, \dots, P\}$.
+\end{lemma*}
+\begin{proof}[Proof of Lemma~\ref{th:MFVI-hm}]
+    Extracting the terms which depend on $S$ from the objective, we are trying to minimise 
+    \begin{equation}
+        F = \Tr{\posterior^{-1}S} - \log \det S. 
+    \end{equation}
+    These terms can be rewritten in terms of the eigen basis and the diagonal covariances of S as 
+    \begin{equation}
+        \Tr{\posterior^{-1}S}  = \sum_{p=1}^P d_p e_p^\top  \posterior^{-1} e_p.
+    \end{equation}
+    Assuming that we restrict $d_p > 0$
+    \begin{equation}
+        \log \det S = \sum_{p=1}^P \log d_p.
+    \end{equation}
+    Substituting these into $F$ gives
+    \begin{equation}
+        F = \sum_{p=1}^P d_p e_p^\top  \posterior^{-1} e_p - \log d_p.
+    \end{equation}
+    Taking the derivative wrt $d_p$ and setting this equal to zero gives 
+    \begin{equation}
+        e_p^\top  \posterior^{-1}e_p = \frac{1}{d^*_p}.
+    \end{equation}
+     
+
+    For the second equality we need to substitute the diagonalised form of the true posterior, so 
+    \begin{equation}
+        e_p^\top  \posterior^{-1}e_p = \sum_{q=1}^P e_p^\top  v_q v_q^\top  e_p \delta_q^{-1} = \sum_{q=1}^P \underbrace{(e_p^\top  v_q)^2 }_{w_{pq}}\delta_q^{-1}. 
+    \end{equation}
+    We define $w_{pq} = (e_p^\top  v_q)^2$, which must sum to one, as it is the definition of the $L_2$ norm squared of the vector $e_p$ which is defined to be equal to one. We provide a formal proof of this sum to one criterion 
+    Lemma~\ref{th:w-sum-to-one}. 
+    
+\end{proof}
+
+
+\begin{lemma} \label{th:w-sum-to-one}
+For any two orthonormal bases, $\{e_p\}_{p=1}^P$ and $\{v_q\}_{q=1}^P$, the weights defined  by the squared inner product between the vectors, $w_{pq} = (e_p^\top v_q)^2$, obey the equality
+\begin{equation}
+    \sum_{p=1}^P w_{pq} = \sum_{q=1}^P w_{pq} = 1 . 
+\end{equation}
+\end{lemma}
+\begin{proof}
+    Consider a vector $a$ and any orthonormal basis $\{z_k\}_{k=1}^P$. The vector $a$ can be written as 
+    $a = \sum_{k=1}^P (a^\top z_k) z_k $, 
+    where the inner product $(a^\top z_k)$ defines the magnitude of the vector along each of the orthogonal directions of the basis.
+    From this it is clear that the squared L2 distance is given, by definition, as 
+    \begin{equation}
+       ||a||^2_2 = \sum_{k=1}^P (a^\top z_k)^2. 
+    \end{equation}
+    
+    Substituting $a = e_p $ and $\{v_q\}_{q=1}^P = \{z_k\}_{k=1}^P$, or $a = v_q $ and $\{e_p\}_{p=1}^P = \{z_k\}_{k=1}^P$ give the two desired equalities. 
+\end{proof}
+
+
+\subsection{MFVI predictions underestimate uncertainty for isotropic test points}
+\label{sec:detailed-isotropic}
+This section gives a detailed proof that the expected predicted variance for the MFVI posterior is less than that of the exact posterior for a test point distributed as $x\sim N(0, \I_P)$.
+
+
+One way to prove this is to first  consider the predictive distribution  when the test point is equal to an eigenvector of the MFVI covariance, \textit{i.e.} at $x = e_p$ for any $p=1, \dots,P$. At any one of these points, the variational posterior will underestimate the epistemic uncertainty of the exact posterior. Formally, we can state the following Lemma.
+\begin{lemma}[Variance Underestimation at MFVI basis vectors]\label{th:MFVI-eb-oc} For any canonical basis vector $e_p, \; p \in \{1, \dots, P\}$ the predictive variances are governed by 
+    \begin{equation}
+        e_p^\top \posterior e_p  \geq e_p^\top S^* e_p. 
+    \end{equation}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{th:MFVI-eb-oc}]
+For the true posterior, the predictive variance is given by
+    \begin{equation}
+        e_p^\top  \posterior e_p = \sum_{q=1}^P w_{pq} \delta_q,
+    \end{equation}
+which is the Arithmetic Mean (AM) of the eigenvalues of the true posterior with weights $\{w_{pq}\}_{q=1}^P$. 
+
+For the MFVI posterior, the predictive variance is given by 
+    \begin{equation}
+        e_p^\top  S^* e_p = d_p = \frac{1}{\sum_{q=1}^P w_{pq} \delta_{q}^{-1}},
+    \end{equation}
+which is the Harmonic Mean (HM) of the eigenvalues of the true posterior with the same weights. The well known AM-HM inequality gives the desired result. 
+% \todo{Give a proof of the AM-HM inequality in the appendix.}
+\end{proof}
+
+
+By noting that the quadratic form $e_p^\top A e_p = A_{pp}$, with $A_{pp}$ being the $p$th diagonal element of the matrix $A$, the result above also easily extends to the following inequality for the trace.
+
+\begin{lemma} [Trace Inequality.] \label{th:tr-inequality}
+The trace of the MFVI posterior and the true posterior are governed by
+\begin{equation}
+    \Tr{\posterior} \geq \Tr{S^*}.
+\end{equation}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{th:tr-inequality}]
+In the basis of the MFVI posterior, trace is given by 
+\begin{equation}
+    \Tr{\posterior} = \sum_{p=1}^P e_p^\top  \posterior e_p, \quad \Tr{S^*} = \sum_{p=1}^P e_p^\top  S^* e_p. 
+\end{equation}
+Each of these terms $p=1,\dots,P$ is governed by the inequality in Lemma~\ref{th:MFVI-eb-oc}, meaning each term in this sum can be bound by $e_p^\top  \posterior e_p  \geq e_p^\top  S^* e_p$, hence the sum of all these terms must also be bound. 
+\end{proof}
+
+From here, we can directly move to proving the isotropic variance overestimation result. 
+
+\begin{lemma*}
+    For a test point $x\sim N(0, \I_P)$, the predictive variances of the MFVI posterior and exact posterior are governed by 
+    \begin{equation}
+        \expectation{x\sim N(0, \I_P)}{x^\top \posterior x} \geq \expectation{x\sim N(0, \I_P)}{x^\top S^* x}
+    \end{equation}
+\end{lemma*}
+\begin{proof}
+By noting 
+    \begin{equation}
+        \expectation{x \sim N(0, \I_P)}{x^\top \posterior x} = \Tr{\posterior}, 
+    \end{equation}
+    \begin{equation}
+    \expectation{x \sim N(0, \I_P)}{x^\top S^* x} = \Tr{S^*}, 
+    \end{equation}
+    the result follows directly from \ref{th:tr-inequality}.
+\end{proof}
+
+
+
+\subsection{MFVI overestimates uncertainty along the first principal component of the training data}
+
+Here we provide the proof of Lemma~\ref{th:underconfident-pc}, with the argument relating this result to the distribution of the training inputs being given in the main text. 
+
+\begin{lemma*}
+(Overestimation of predictive variance in one direction of the input space.) For points in the input space defined by $ \tilde x \in \text{span}(v_{q^*})$  for some scalar, the predictive variance for the exact posterior and the MFVI posterior are governed by the inequality 
+    \begin{equation}
+        \tilde x ^\top S^* \tilde x  \geq \tilde x^\top \posterior \tilde x.
+    \end{equation}
+\end{lemma*} 
+
+
+\begin{proof}[Proof of Lemma~\ref{th:underconfident-pc}]
+Let $\tilde x  = c v_{q^*}$, for some constant $c$. For $c=0$ the equality holds trivially. 
+For any non-zero constant $c$, the predictive variance of the two posteriors are given by 
+\begin{equation}
+     \tilde x^\top S^* \tilde x = c^2 v_{q^*}^\top  S v_{q^*} \quad \text{and}\quad \tilde x ^\top  \posterior \tilde x = c^2 v_{q^*}^\top  \posterior v_{q^*},
+\end{equation}
+so proving the result for $c=1$ gives the result for all other non zero values of $c$. 
+
+The predictive variance of the MFVI posterior is given by 
+\begin{equation}
+    v_{q^*} ^\top  S^* v_{q^*} = v_{q^*}^\top  \left(\sum_{p=1}^P e_p e_p^\top  d_p\right)v_{q^*} = \sum_{p=1}^P (v_{q^*}^\top  e_p)^2 d_p. 
+\end{equation}
+Note that $(v_{q^*}^\top  e_p)^2= w_{pq^*}$ which is the weighted term relating the MFVI posterior eigenvalues to the exact posterior eigenvalues. Making this substitution, along with the values of the eigenvalues of $d_p$ from Lemma~\ref{th:MFVI-hm}, we can use 
+\begin{equation}
+    v_{q^*} ^\top  S^* v_{q^*}  = \sum_{p=1}^P  \frac{w_{pq^* }}{ \sum_{q=1}^P w_{pq} \delta_q^{-1} }.
+\end{equation}
+As we have defined $\delta_{q^*}$ to be the minimum eigenvalue, we can use the inequality 
+\begin{equation}
+     v_{q^*} ^\top  S^* v_{q^*}  \geq \sum_{p=1}^P  \frac{w_{pq^* }}{ \sum_{q=1}^P w_{pq} \delta_{q^*}^{-1} } = \sum_{p=1}^P  \frac{w_{pq^* }}{  \delta_{q^*}^{-1} }
+     = \sum_{p=1}^P  w_{pq^*} \delta_{q^*} = \delta_{q^*}
+      = v_{q^*} \posterior v_{q^*}.
+\end{equation}
+
+This proves the statement for $c=1$, hence giving the result for all non-zero c. 
+
+\end{proof}
+
+
+Following this we can simply show the overestimation of predictive variance along the first principal component. 
+
+\begin{theorem*}
+Consider the conjugate Bayesian linear model of \cref{eq:linear-regression} with a spherical prior $\theta \sim N(0, \prior)$, and let $w$ denote the first principal component of the training inputs $X$. Then for any test point $\tilde x \in \text{span}(w)$, the predictive variances of the MFVI and exact posteriors satisfy
+\begin{equation}
+    \tilde x^\top S^* \tilde x \;\geq\; \tilde x^\top \posterior \tilde x.
+\end{equation}
+\end{theorem*}
+\begin{proof}[Proof of Theorem~\ref{th:pc-remark}]
+For a spherical prior $\theta \sim N(0, \alpha^{-1}\I)$, the exact posterior covariance $\posterior$ shares its eigenbasis with the Gram matrix $X^\top X$, since $\precisionprior$ commutes with every matrix. Writing this shared eigenbasis as $\{v_q\}_{q=1}^P$ with associated Gram matrix eigenvalues $\{\gamma_q\}_{q=1}^P$, the posterior eigenvalues are
+\begin{equation}\label{eq:remark-eigvals}
+    \delta_q = \left(\alpha + \frac{\gamma_q}{\likelihood}\right)^{-1}.
+\end{equation}
+This relationship is strictly decreasing in $\gamma_q$, so the eigenvector associated with the largest Gram matrix eigenvalue is the eigenvector associated with the smallest posterior eigenvalue. The former is, by definition, the first principal component of the training data, $w$, and the latter is $v_{q^*}$ as defined in Lemma~\ref{th:underconfident-pc}, so $w = v_{q^*}$. 
+
+Hence $\text{span}(w) = \text{span}(v_{q^*})$, and any test point $\tilde x \in \text{span}(w)$ satisfies the hypothesis of Lemma~\ref{th:underconfident-pc}. Applying that lemma directly gives
+\begin{equation}
+    \tilde x^\top S^* \tilde x \;\geq\; \tilde x^\top \posterior \tilde x,
+\end{equation}
+as claimed.
+\end{proof}
+
+\subsection{MFVI under- and overestimates uncertainties similarly}
+
+The easiest way to show Lemma~\ref{th:calibrated-points} is to first show a particular quantity,  $\Tr{\posterior^{-1} S^* }$, is conserved for any exact posterior covariance.  
+\begin{lemma}[Conserved Trace Product]
+\label{th:conserved-trace}
+    For any eigenbasis of the MFVI posterior, the optimal MFVI posterior covariance will obey
+    \begin{equation}
+        \Tr{\posterior^{-1}S^*} = P.
+    \end{equation}
+\end{lemma}
+% \todo{Move this proof from the main body to the appendix. }
+% \todo[color=yellow]{This is interesting because it means that in the KL between true and MFVI posterior, the only "surviving" term is the log(det-ratio)...}
+\begin{proof} 
+    The trace of any $P \times P$  matrix $A$ can be calculated by the sum of quadratic forms of the orthonormal eigenbasis of the MFVI posterior: $\Tr{A} = \sum_{p=1}^P e_p^\top A e_p$. Applying this to the product of the inverse of the true posterior covariance matrix with the MFVI posterior covariance matrix gives
+    \begin{equation}
+        \Tr{\posterior^{-1}S^*} = \sum_{p=1}^P e^\top_p  \posterior^{-1} S^* e_p = \sum_{p=1}^P d_p^* \left( e^\top_p  \posterior^{-1} e_p\right) = \sum_{p=1}^P 1 = P. 
+    \end{equation}
+\end{proof}
+
+From this it is easy to show Lemma~\ref{th:calibrated-points}. 
+
+\begin{lemma*}
+[Calibrated MFVI]
+    Consider the set of eigenvectors of the true posterior $\{v_q\}_{q=1}^P$. For these points 
+    \begin{equation}
+     \frac{1}{P}\sum_{q=1}^P R(v_q ) = 1.  
+    \end{equation}
+\end{lemma*}
+
+% \begin{lemma}
+% [Calibrated MFVI]
+%     Consider the set of eigenvectors of the true posterior $\{v_q\}_{q=1}^P$. For these points 
+%     \begin{equation}
+%      \frac{1}{P}\sum_{q=1}^P R(v_q ) = 1.  
+%     \end{equation}
+% \end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{th:calibrated-points}]
+For any matrix $A$ and orthonormal basis $\{v_q\}_{q=1}^P$, we have $\mathrm{Tr}(A) = \sum_{q=1}^P v_q^\top  A v_q$. Applying this to $A = \Sigma^{-1} S^*$ gives
+\begin{equation}
+    \mathrm{Tr}(\Sigma^{-1} S^*) = \sum_{q=1}^P v_q^\top  \Sigma^{-1} S^* v_q.
+\end{equation}
+Since $v_q$ is an eigenvector of $\Sigma$ with eigenvalue $\delta_q$, we have $v_q^\top  \Sigma^{-1} = \frac{1}{\delta_q} v_q^\top $. Thus
+\begin{equation}
+    \mathrm{Tr}(\Sigma^{-1} S^*) = \sum_{q=1}^P \frac{v_q^\top  S^* v_q}{\delta_q} = \sum_{q=1}^P \frac{v_q^\top  S^* v_q}{v_q^\top  \Sigma v_q} = \sum_{q=1}^P R(v_q).
+\end{equation}
+From Lemma~\ref{th:conserved-trace} this equals $P$, and dividing both sides by $P$ gives the result.
+\end{proof}
+
+
+\subsection{MFVI overestimates predictive variance for data with the empirical covariance}
+
+\begin{theorem*}  
+For test data points distributed according to $x\sim \hat p(x)$, the difference in the expected predicted variance is given by 
+    \begin{equation}
+        \expectation{x\sim \hat p (x)}{x^\top \posterior x -  x^\top S^*  x }  \leq 0 . 
+    \end{equation}
+\end{theorem*}
+
+\begin{proof}[Proof of Theorem~\ref{th:empirical_pred_var}]
+Due to the linearity of the expectation, we can write 
+\begin{align}
+\expectation{x\sim \hat p (x) }{x^\top  \posterior x - x^\top  S^*  x } = \expectation{x\sim \hat p (x)}{x^\top  \posterior x}  - \expectation{x\sim \hat p (x)}{x^\top  S^*  x },
+\end{align}
+which allows us to deal with the two expectations separately. 
+
+To prove the result we need to make use of the following identity:
+\begin{equation} \label{eq:posterior-gamma}
+ \hat \Gamma =\frac{\likelihood}{N} \left(\posterior^{-1} - \alpha \I \right) . 
+\end{equation}
+
+By making use of the identity in Equation~\eqref{eq:posterior-gamma}, we can write
+\begin{align}
+    \expectation{x\sim \hat p (x)}{x^\top  \posterior x } &= \Tr{\hat \Gamma \posterior} \nonumber
+    \\ &= \Tr{\frac{\likelihood}{N} \left(\posterior^{-1} - \alpha \I \right) \posterior} \nonumber
+    \\ &= \frac{\likelihood}{N} \left( \Tr{\posterior^{-1}\posterior} - \alpha \Tr{\posterior} \right) \nonumber
+    \\ &= \frac{\likelihood}{N} \left( \Tr{\I} - \alpha \Tr{\posterior} \right) \nonumber
+    \\ &= \frac{\likelihood}{N} \left(P - \alpha \Tr{\posterior}\right).
+\end{align}
+
+We can make use of Lemma~\ref{th:conserved-trace} to see
+\begin{align}
+    \expectation{x\sim \hat p (x)}{x^\top  S^*  x } &= \Tr{\hat \Gamma S^*} \nonumber
+     \\ &= \Tr{\frac{\likelihood}{N} \left(\posterior^{-1} - \alpha \I \right) S^*} \nonumber
+     \\ &= \frac{\likelihood}{N} \left(\Tr{\posterior^{-1}S^*} - \alpha \Tr{S^*} \right) \nonumber
+     \\ &= \frac{\likelihood}{N} \left(P - \alpha \Tr{S^*}\right).
+\end{align}
+
+
+Subtracting one of these from the other gives 
+\begin{align}
+    \expectation{x\sim \hat p (x)}{x^\top  \posterior x }  - \expectation{x\sim \hat p (x)}{x^\top  S^*  x } = \frac{\likelihood \alpha }{N} \left( \Tr{S^* } - \Tr{\posterior}\right).
+\end{align}
+As $\frac{\likelihood \alpha }{N} > 0$, this value will take the same sign as the difference in the traces. From Lemma~\ref{th:tr-inequality} we know that 
+\begin{equation}
+    \Tr{S^* } - \Tr{\posterior} \leq 0, 
+\end{equation}
+hence the expected posterior predictive variance of the true posterior is less than the expected posterior predictive variance of the MFVI posterior. 
+\end{proof}
+
+\subsection{Cold Posteriors}
+\label{ap:cold-posterior-proofs}
+
+\paragraph{MFVI posterior rescaling for cold posterior.} Here, we prove that the cold posterior MFVI objective has the form $q_T(\theta) = N(m^*, T S^*)$ as stated in Section~\ref{sec:cold_posterior}, where $m^*$ and $S^*$ are the solutions at $T=1$ given in \cref{eq:mfvi_optimal_mean,eq:mfvi_optimal_cov}. 
+
+\begin{proof}
+    In the conjugate case with prior $N(0, \alpha^{-1} \I_P)$ and likelihood $N(y|\theta^\top  x, \likelihood) $, the cold posterior is given by 
+    \begin{align}
+        p_T(\theta|\data) & \propto \left[\prod_{n=1}^N N(y_n | \theta^\top x_n, \likelihood) \temp \right] N(\theta| 0, \prior)\temp
+        \\ &\propto \left[\prod_{n=1}^N \exp\left(-\frac{1}{2\likelihood} \left(y_n - \theta^\top x_n\right)^2 \right) \temp \right] \exp\left(-\frac{\alpha}{2} \theta^2 \right) \temp
+        \\ &= \left[\prod_{n=1}^N \exp\left(-\frac{1}{2 T \likelihood} \left(y_n - \theta^\top x_n\right)^2 \right)  \right] \exp\left(-\frac{\alpha}{2T } \theta^2 \right) 
+        \\ & \propto \left[\prod_{n=1}^N N(y_n | \theta^\top x_n, T \likelihood) \right] N\left(\theta| 0, \frac{T}{\alpha} \I_P\right). 
+    \end{align}
+    In other words, this is the exact posterior for a system with a rescaled likelihood and prior. 
+    
+    Applying the known results for the covariance gives
+    \begin{equation}
+    \begin{split}
+        \posterior_T &= \left(\frac{\alpha}{T } \I_P + \frac{1}{T \likelihood} X^\top X \right)^{-1}
+        \\ & = T \left(\alpha \I_P + \frac{1}{ \likelihood} X^\top X \right)^{-1}
+        \\ & = T \posterior,
+    \end{split}
+    \end{equation}
+    so the exact cold-posterior covariance is the exact posterior at $T=1$ scaled by a factor T. 
+
+    Applying the known result for the mean gives 
+    \begin{equation}
+        \mu_T = \posterior_T \left(\frac{1}{T \likelihood} X^\top Y \right)
+        = \frac{1}{\likelihood} \posterior X^\top Y = m,
+    \end{equation}
+    so applying the exponentiation does not change the mean of the posterior. 
+
+    From here it is straightforward to apply the optimal variational parameter arguments to get 
+    \begin{equation}
+        m_T  = m = \mu \; \forall \;  T, 
+    \end{equation}
+    so the change in temperature does not effect the mean values. 
+    
+    Similarly, 
+    \begin{equation}
+        d_{pT}= \frac{1}{e_p^\top  \frac{1}{T} \posterior^{-1} e_p } = \frac{T}{e_p^\top \posterior^{-1} e_p} = T d_p,
+    \end{equation}
+    so 
+    \begin{equation}
+        S_T = T S^*. 
+    \end{equation}
+\end{proof}
+
+\subsection{Pathological example: Low Rank Linear Regression}
+\label{sec:low-rank-proofs}
+
+\begin{proposition*} 
+    As $P \to \infty$, for any test input $x\in \R^P$ the posterior predictive variance of the MFVI posterior will be given by 
+    \begin{equation}
+        x^\top  S^* x = \alpha^{-1} || x ||_2^2,
+    \end{equation}
+    where $\alpha$ is the prior precision. 
+\end{proposition*}
+
+\begin{proof}[Proof of Proposition~\ref{th:toy_mfvi_prior_pred}]
+    
+    We start this proof by considering the symmetries,  thereby giving us the weights which relate the eigenvalues of the exact posterior to the MFVI posterior. 
+    As the relation between $1_P$ and each canonical basis function is identical, so it is clear that all values of $w_{pq}$ are the same. Combining this with the sum-to-one requirement gives $w_{pq} = \frac{1}{P} \; \forall \; p, q $. 
+
+    Next we note that in the exact posterior all of the eigenvalues will be $\alpha^{-1}$, apart from the one associated with the eigenvector which points towards the span of the data, which we will denote by $\deltamin$. 
+
+    We can then consider the predicted variance which would be given by the normalised test point $\frac{x}{||x||_2^2}$ this into the predicted variance gives  
+    \begin{align}
+        \frac{x^\top S^* x}{||x||_2^2} &= \sum_{p=1}^P \frac{w_{pq}}{\sum_{q=1}^P \frac{w_{pq}}{\delta_q}}
+        \\ & = \sum_{p=1}^P \frac{\frac{1}{P}}{\sum_{q=1}^P \frac{1}{P \delta_q}}
+        \\ & = \sum_{p=1}^P \frac{\frac{1}{P}}{\frac{1}{P \deltamin} + (P-1)\alpha}
+        \\ & = \frac{1}{\frac{1}{P \deltamin} + \frac{(P-1)\alpha}{P}}
+    \end{align}
+
+
+
+
+
+    % \begin{equation}
+    %     x^\top  S^* x= \frac{1}{\frac{1}{P \deltamin} + \frac{(P-1)\alpha}{P}}.
+    % \end{equation}
+
+    Inspecting the denominator 
+    \begin{equation}
+        \frac{1}{P \deltamin} + \frac{(P-1)\alpha}{P} = \frac{1}{P \deltamin} - \frac{\alpha}{P} + \alpha.
+    \end{equation}
+    As $P\to \infty$ the first two terms go to zero, leaving $\alpha$. Applying the limit quotient rule we see 
+    \begin{equation}
+        \frac{x^\top S^* x}{||x||_2^2} = \alpha^{-1}
+    \end{equation}
+and hence 
+    
+\begin{equation}
+        x^\top  S^* x= \alpha^{-1} ||x||_2^2.
+    \end{equation}
+\end{proof}
+
+
+
+

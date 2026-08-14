@@ -1,0 +1,969 @@
+    \documentclass{article}
+
+
+% \usepackage{graphicx} % Required for inserting images
+% \usepackage[english]{babel}
+% \usepackage{natbib}
+% \usepackage{todonotes}
+% \usepackage[margin=2cm]{geometry}
+
+% \usepackage{amssymb}
+% \usepackage{amsmath}
+% \usepackage{amsthm}
+% \usepackage{cleveref}
+
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{remark}[theorem]{Remark}
+
+
+% \title{Mean Field Variational Predictions are Under-confident}
+% \author{James Odgers}
+% \date{November 2025}
+% Recommended, but optional, packages   for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+\usepackage[T1]{fontenc}
+
+
+\usepackage{thmtools}
+\usepackage{thm-restate}
+
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage[accepted]{icml2026}
+
+% For preprint, use
+% \usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\theoremstyle{plain}
+
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{remark*}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\expectation}[2]{\mathbb{E}_{#1}\left[#2\right]}
+
+\newcommand{\data}{\mathcal{D}}
+
+\newcommand{\likelihood}{\sigma^2}
+\newcommand{\prior}{\alpha^{-1} \mathbb{I}}
+\newcommand{\precisionprior}{\alpha \mathbb{I}}
+\newcommand{\posterior}{\Sigma}
+
+\newcommand{\ml}{m_\lambda}
+\newcommand{\Sl}{S_\lambda}
+\newcommand{\dlp}{d_{\lambda p}}
+
+
+\newcommand{\elbo}{\mathcal{L}}
+\newcommand{\lelbo}{\mathcal{L}_\lambda}
+\newcommand{\KL}[2]{D_{KL}\left(#1||#2\right)}
+
+
+\newcommand{\Tr}[1]{\text{Tr}\left(#1\right)}
+
+\newcommand{\var}{\text{Var}}
+\newcommand{\cov}{\text{Cov}}
+
+\newcommand{\temp}{^{\frac{1}{T}}}
+
+\newcommand{\deltamin}{\delta_{min}}
+
+\crefname{appendix}{appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}
+
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Gaussian MFVI can overestimate predictive variance}
+
+\begin{document}
+
+\twocolumn[
+  
+\icmltitle{Gaussian Mean Field Variational Inference can Overestimate Predictive Variance}
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{James Odgers}{utn,h,mcml}
+    \icmlauthor{Ben Riegler}{tum,h,mcml}
+    \icmlauthor{Siddharth Swaroop}{ucl}
+    \icmlauthor{Vincent Fortuin}{utn,h,mcml}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{utn}{University of Technology Nuremberg (UTN)}
+  \icmlaffiliation{h}{Helmholtz AI}
+  \icmlaffiliation{mcml}{Munich Center for Machine Learning (MCML)}
+  \icmlaffiliation{tum}{Technische Universität München (TUM)}
+  \icmlaffiliation{ucl}{University College London (UCL)}
+
+  \icmlcorrespondingauthor{James Odgers}{james.odgers@utn.de}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Variational Inference, Mean Field Variational Inference, MFVI, Bayesian Linear Regression}
+
+  \vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+
+\begin{abstract}
+Mean Field Variational Inference (MFVI) is widely understood to underestimate posterior variance. By analysing conjugate Bayesian Linear Regression (BLR), we show that this characterization is incomplete: while MFVI underestimates the variance in parameter space, it can overestimate the predictive variance compared to the exact posterior. We show that if the MFVI posterior underestimates predictive variances in some directions, it necessarily overestimates them in others. Crucially, this overestimation occurs in directions where the training data concentrates. This leads to the surprising result that, for a test point drawn from the training distribution, MFVI's expected predictive variance exceeds that of the exact posterior. We demonstrate a pathological case of this effect, where the  MFVI posterior fails to reduce predictive variance compared to the prior on in distribution data. We connect these results to the Cold Posterior Effect, arguing that varying the temperature can correct this overestimation, yielding predictions closer to those of the exact posterior. We validate our theory on synthetic and real-world regression tasks.
+\end{abstract}
+
+\section{Introduction}
+
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[height=1.5in]{figs/toy_illustration/2d_data_viz.pdf}
+        \subcaption{Input space}
+        \label{fig:toy-input-space}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[height=1.5in]{figs/toy_illustration/2d_parameter_viz.pdf}
+        \subcaption{Parameter space}
+        \label{fig:toy-parameter-space}
+    \end{subfigure}%
+    \caption{
+    Although the MFVI posterior underestimates variance on average, it overestimates variance along the direction in which the data lie. Here we show this on a simple 2D linear regression, where the input data is restricted to lie on the subspace $x_1=x_2$ (\cref{fig:toy-input-space}). We see that, for most of the input space, MFVI predictive uncertainty is less than the exact posterior predictive (blue region). At the same time, along the data direction, the opposite is true (red region). 
+    This is also the case when looking at the weight-space posterior (\cref{fig:toy-parameter-space}), with the exact posterior clearly taking up more volume, but also with the MFVI posterior having a larger variance along the crucial $\theta_1 = \theta_2$ subspace. 
+    %This figure illustrates the relationship between the exact posterior and the MFVI posterior in a simple 2D linear regression where the input data is restricted to lie on the subspace $x_1=x_2$ . \cref{fig:toy-parameter-space} shows the 95\% credible elipse of the exact posterior and the MFVI posterior, with the exact posterior clearly taking up more volume, but also with the MFVI posterior clearly having a larger variance along the crucial $\theta_1 = \theta_2$ subspace. \cref{fig:toy-input-space} shows the input space, with the input locations of data that produced these posteriors shown as blue points. The background color is given by $R(x)$, which is the ratio of the predicted variance of the MFVI posterior to the exact posterior, with the points where $R(x)=1$ being indicated by green dashed lines. While in the majority of the input space the exact posterior has a higher uncertainty (blue background), the subspace in which the data lies is all in the region where the MFVI posterior has higher uncertainty (red background). 
+    }
+    \label{fig:toy-illustration}
+\end{figure}
+Bayesian approaches to machine learning offer compelling advantages, including a principled approach to uncertainty estimation, and learning hyperparameters without overfitting \cite{mackay1992bayesian}.
+Unfortunately, the full Bayesian posterior, $p(\theta| \data)$, is usually intractable and needs to be approximated. 
+One of the most popular approaches to approximate this posterior is Variational Inference (VI) \cite{jordan1999introduction, blei2017variational}. Here, a family of distributions is proposed, $\mathcal{Q}$, from which the distribution $q^*(\theta)$ is optimized, which minimises the reverse KL divergence to the true posterior, $q^*(\theta) = \arg \min_{q\in Q} \KL{ q(\theta)}{p(\theta|\data)}$. Practitioners often use Mean Field Variational Inference (MFVI), in which the variational posterior factorises across parameters, $q(\theta) = \prod_{p=1}^P q_{p}(\theta_p) $. In practice, the marginal distributions are often restricted to be Gaussian, so  $q_{p}(\theta_p)=N(\mu_p, \sigma^2_p)$. We study this popular setting in this paper. 
+
+MFVI is typically considered to \textit{underestimate} the uncertainty of the posterior \cite{minka2005Divergencemeasuresmessage, Turner_Sahani_2011, blei2017variational}. This is because it is a mode-fitting approximation in parameter space: the approximate posterior avoids assigning probability mass to regions with low true probability, thereby underestimating the variance in parameter space \cite{margossian2023shrinkage}. However, in this paper, we argue that this picture is incomplete once the goal is prediction rather than parameter inference. In particular, the predictions from an MFVI posterior can \textit{overestimate} uncertainty on In-Distribution (ID) data.
+
+
+
+%, where the approximate posterior is penalized more heavily for assigning probability mass to areas with a low true posterior probability than for assigning low approximate posterior probability to regions which have high true probability \todo{check terminology and cite this sentence}. This results in posteriors which can, in various ways be considered to be overconfident compared to the true posterior \todo{cite Charles's paper}. 
+% We provide a toy illustration for this in \cref{fig:toy-parameter-space}, which shows the 95\% confidence ellipse of the exact posterior and the MFVI posterior, and clearly shows the exact posterior confidence ellipse occupies a larger volume of the parameter space than the MFVI posterior confidence ellipse. 
+
+\paragraph{Illustrative example (\cref{fig:toy-illustration}).} \cref{fig:toy-input-space} shows some simple training data restricted to the subspace $x_1=x_2$, and \cref{fig:toy-parameter-space} shows the exact posterior and MFVI posterior (in parameter space) for this linear regression example. 
+%\cref{fig:toy-parameter-space} shows the exact posterior and MFVI posterior for a linear regression example, and \cref{fig:toy-input-space} shows the input location of the training data which produced this posterior. These training points are restricted to the subspace $x_1=x_2$, shown by the dashed line. 
+The highly uneven, non-axis-aligned covariance of the training inputs produces a posterior with a strong covariance between $\theta_1$ and $\theta_2$ in the parameter space. %, and thus a large difference between the MFVI and true posteriors. 
+We can see how MFVI appears to underestimate the variance in general: its mass is over a smaller region of the parameter space than the mass of the exact posterior. 
+However, in this example, we are not interested in the parameters learned by the model; instead, we care about the predictions made on test data. 
+A realistic assumption is often that future data points are similar to training data points, such that $x_1 = x_2$. 
+If this is the case, the only direction in parameter space relevant for predictions is $\theta_1 = \theta_2$, as illustrated by the dashed line in \cref{fig:toy-parameter-space}. 
+In this direction, the MFVI posterior \textit{overestimates} the variance compared to the true posterior. Our main result, given in Theorem~\ref{th:empirical_pred_var}, is to show that the overestimation of predictive variance in MFVI in Bayesian Linear Regression (BLR) is very general. 
+% Specifically, if an isotropic Gaussian prior is used, then the MFVI posterior predictive variance will overestimate the exact posterior predictive variance for the training data.
+
+
+
+
+\paragraph{A Cold Posterior Effect without model mismatch. } The Cold Posterior Effect (CPE) from Bayesian Deep Learning (BDL) \cite{wenzel2020good}, describes an effect where artificially reducing the uncertainty of an approximate posterior improves predictive performance. In this work, we add another justification for why we may expect the CPE: lowering the temperature corrects for overestimated predictive variance from MFVI on in-distribution data,  producing predictions which match the exact posterior predictions more closely. We demonstrate that the reverse effect is true for Out-Of-Distribution (OOD) data, where a warm posterior matches the exact posterior predictive distribution more closely and performs better on predictive tasks. 
+
+
+\paragraph{Contributions.} In this paper, our main contributions are:
+\begin{itemize}
+    \item We provide a theoretical analysis of conjugate Bayesian Linear regression, showing that the MFVI posterior overestimates the exact posterior variance along the first principal component of the training data, and that the average predicted variance at the training data points is higher for MFVI than the exact posterior. 
+    \item We theoretically and empirically examine the predictive performance of MFVI on a pathological setup and demonstrate that in the high-dimensional limit, the MFVI posterior can fail to reduce the predictive variance at all compared to the prior.
+    \item We show theoretically and empirically that both a Cold Posterior Effect and Warm Posterior Effect can occur in linear regression models approximated with MFVI, and argue that both of these effects can be understood as scaling the predictive variance of the MFVI approximation to better match the exact posterior predictions. 
+\end{itemize}
+
+\section{Related Work}
+\label{sec:background}
+
+\textbf{Variational Inference (VI).}
+VI research has mostly focused on the approximation quality in parameter space, not the approximation quality on predictions (see \citet{blei2017variational} for an example of this). 
+One line of related research is Functional VI \cite{sun2019functional, burt2020understanding, cinquin2024regularized}, to allow more interpretable priors, such as GPs, to be applied to BNNs. In our linear regression setting, there is a one-to-one mapping between functions and parameters, so there is no difference in the functional and parametric variational objectives \citep[see Proposition 3,][]{burt2020understanding}.
+A functional approach to VI is also common in Gaussian Processes \citep{titsias2009variational} to improve computational efficiency. We do not consider these approaches in this paper, as these approaches are equivalent to different variational families in parameter space which we do not study here.
+The paper closest to the theoretical analysis we provide is \citet{margossian2023shrinkage}, who studied the theoretical properties of the Gaussian MFVI posterior when the exact posterior is a Multivariate Gaussian. Crucially, this current work focuses on the properties of the predictions of VI, whereas \citet{margossian2023shrinkage} focus on the properties in parameter space. 
+
+\textbf{Cold Posterior Effect (CPE).}
+There are several works proposing explanations for the CPE, showing how this effect can naturally arise from data augmentation \citep{izmailov2021bayesian, nabarro2022data, bachmann2022tempering}, misspecified likelihoods \citep{adlam2020cold, aitchison2020statistical}, misspecified priors \cite{fortuin2021bayesian, kapoor2022uncertainty, marek2024can}, or a combination of effects \citep{zeno2020cold, noci2021disentangling}. 
+We do not disagree with these causes; our paper provides an additional novel explanation, in which the model has a well-specified likelihood and prior, and no data augmentation is used. Instead, we propose that the CPE allows the MFVI approximation to more closely match the exact posterior predictions for certain tasks. %\citet{wilson2022evaluating} considers which methods of approximate inference most closely match full-batch HMC sampled predictions of BNNs, and found that a  VI method \cite{shen2024variational} performed the best, but did not explicitly consider temperature and did not perform a theoretical analysis. 
+\citet{zhang2024cold} argue that the CPE is correcting for underconfident predictions, which we agree with and extend by providing a mechanistic understanding of this effect with MFVI.
+Many MFVI algorithms in deep learning temper their likelihood function, but do not provide any theoretical analysis or reasoning \citep[e.g.,][]{osawa2019practical,ashman2022partitioned}. We became aware of contemporaneous work by \citet{harvey2025learning} showing that the standard MFVI-ELBO objective produces underconfident predictions, though their focus is on hyper-parameter learning, which we hold fixed.
+
+\textbf{GenBayes.}
+Generalized Bayes centres around the idea that traditional Bayesian inference methods may not give models the best predictive properties; a tempering strategy \cite{aitchison2020statistical}, in which the likelihood and the prior regularisation terms of the VI objective are weighted differently, can produce better predictions \cite{pitas2022cold, mclatchie2025predictive}. Our work is distinct from tempered objectives. Instead, we consider an objective approximating an exact cold posterior, which cannot be written with a tempered objective, as discussed in detail in Section~\ref{sec:cold_posterior}.
+
+\section{MFVI Overestimates Predictive Uncertainty for the Empirical Distribution}
+\label{sec:theory}
+\paragraph{Problem Statement.}
+
+Assume we have a model where inputs $x\in \R^{P} $ and outputs $y\in \R$ are related by the linear predictor $\theta \in \R^P$, such that
+\begin{equation} \label{eq:linear-regression}
+    y =  \theta^\top x + \epsilon, \quad \epsilon \in \R \sim N(0,\likelihood ).
+\end{equation}
+We assume that we have a training dataset of the form $\data = \{x_n, y_n\}_{n=1}^N = \{X \in \R^{N \times P }, Y \in \R^{N}\}$ drawn from this distribution. We will call the empirically observed distribution of inputs $\hat p(x) = \frac{1}{N}\sum_{n=1}^N \delta(x-x_n)$, and assume that the training data was mean-centred, so $\expectation{\hat p(x)}{x } = 0$. Throughout this paper, we will assume that the prior, $\theta \sim N(0, \prior)$, and likelihood, $\likelihood$, are well specified and known to us.  
+
+
+\paragraph{True Posterior.}
+
+In this work, we are interested in comparing to the true posterior 
+\begin{equation}\label{equ:true_post}
+    p(\theta | \data) = N(\mu, \posterior), 
+\end{equation}
+\begin{equation*}
+    \posterior = \left(\frac{1}{\likelihood}X^\top X + \precisionprior\right)^{-1}, \; \mu = \Sigma \left(\frac{1}{\likelihood}X^\top Y\right).
+\end{equation*}
+
+Specifically, we are interested in comparing the predictions for the output, $y$, for a given test point, $x$, from the true posterior and approximate posteriors. 
+
+\paragraph{Diagonalised True Posterior Covariance.} We will work with the diagonalised covariance matrix. For this, we define $\posterior = V \Delta V^\top$, where $\Delta = \text{diag}(\delta_1, \dots, \delta_P), \delta_p \in \R^+$, is a diagonal matrix and the columns of $V = [v_1, \dots, v_P], v_p \in \R^P$, form a complete, orthonormal basis. We will use the expression 
+\begin{equation}
+    \posterior = \sum_{q=1}^P \delta_q v_q v_q^\top.
+\end{equation}
+
+
+\paragraph{The variational posterior.}
+We are interested in finding an approximate posterior $q(\theta) = N(m,S)$ by minimising the reverse Kullback-Leibler (KL) divergence to the true posterior. For our linear regression model, the true posterior is Gaussian, so the objective to be minimised is
+\begin{multline}
+    \KL{q(\theta)}{p(\theta| \data)} = \frac{1}{2} \big[(\mu - m)^\top  \posterior^{-1} (\mu - m) \\ + Tr(\posterior^{-1}S) - \log \det S + \log \det \posterior -P \big].
+\end{multline}
+This objective is minimised by the true posterior; however, this is commonly not available for computational reasons. 
+
+Instead, the variational posterior is constrained to factorise over its $P$ dimensions. In the Multivariate Gaussian case, this requires constraining the variational posterior to be diagonal, which is equivalent to fixing the eigenbasis to be axis-aligned. This allows us to write 
+\begin{equation}
+    S =  \sum_{p=1}^P d_{p} e_p e_p^\top, 
+\end{equation}
+where $e_p$ are the canonical basis vectors which contain a single $1$ at position $p$ and are zero otherwise. %If the canonical basis vectors are used as the basis vectors, $e_p$, then $U$ will be the identity matrix, and the typical diagonal form for the MFVI posterior will be found. 
+
+In this form, the goal of fitting the variational posterior is given by finding the optimal parameters of $m^*$ and $\{d^*_p\}_{p=1}^P$. The optimal parameters for these, formalised in the following two lemmas, can be found as functions of the posterior mean, covariance eigenvalues, and the inner product of the orthonormal bases of the posteriors, $v_q^T e_p$. The proofs for these can be found in Appendix~\ref{ap:variational-proofs}.
+
+% \begin{restatable}[Optimal variational mean]{lemma}{optimalvarmean}
+% \label{lemma:optimal_var_mean}
+%     For any positive definite posterior covariance, the optimal mean is the mean of the posterior: 
+%     \begin{equation} \label{eq:mfvi_optimal_mean}
+%         m^* = \mu.
+%     \end{equation}
+% \end{restatable}
+
+\begin{restatable}[Optimal variational mean]{lemma}{varmean}
+\label{lemma:optimal_var_mean}
+    For any positive definite posterior covariance, the optimal mean is the mean of the true posterior: 
+    \begin{equation} \label{eq:mfvi_optimal_mean}
+        m^* = \mu.
+    \end{equation}
+\end{restatable}
+% \begin{lemma}[Optimal variational mean] \label{lemma:optimal_var_mean}
+%     For any positive definite posterior covariance, the optimal mean is the mean of the true posterior: 
+%     \begin{equation} \label{eq:mfvi_optimal_mean}
+%         m^* = \mu.
+%     \end{equation}
+% \end{lemma}
+
+\begin{lemma} [Optimal variational posterior eigenvalues are harmonic means] \label{th:MFVI-hm}
+    The optimal variational covariance, $S^*$, is given by the condition
+    \begin{equation} \label{eq:mfvi_optimal_cov}
+        \frac{1}{d_p^*} = {e_p^\top \posterior^{-1} e_p} = {\sum_{q=1}^P \frac{w_{pq}}{\delta_q}} \quad \forall \; p \in \{1, \dots P\},
+    \end{equation}
+    where $w_{pq} = (v_q^T e_p)^2$ and  $\sum_{q=1}^P w_{pq} = 1 \; \forall \; p \in \{1, \dots, P\}$.
+\end{lemma}
+While the values of the optimal variational posterior are well known in the literature \citep{Turner_Sahani_2011, margossian2023shrinkage}, we are unaware of prior work describing the variational posterior eigenvalues as a weighted harmonic mean of the eigenvalues of the exact posterior. Later, this will be important for our theoretical arguments. 
+
+
+
+For a test input location, $x$, we are interested in comparing the predictive distributions excluding aleatoric uncertainty, which are given by 
+\begin{equation}
+\begin{split}
+    p(f| \data) &= N(\mu^\top x, x^\top \posterior x ),
+    \\q(f) &= N(m^{* \top} x, x^\top S^* x )
+\end{split}
+\end{equation}
+ for the exact and MFVI posteriors, respectively. As the optimal variational and exact posterior means are identical, the only difference in these distributions is in the variance of the predictions, which is where we focus from now on. 
+
+
+\subsection{Theoretical Analysis of Predictions from MFVI}
+This section proves theoretical results about the relationship between predictions from the MFVI and the exact posterior. 
+We start by confirming the traditional story that MFVI underestimates variance, \textit{i.e.} is overconfident, showing this is the case when the test input is isotropic. 
+%First, we show the way in which the traditional story that MFVI is overconfident is correct: case where the test input is isotropic. 
+After this, we focus on the ways in which this traditional story is misleading. First, we show that there must be at least one direction in which the MFVI overestimates variance and, for spherical priors, this is the direction of maximum variance of the training data. After this, we show that the degree of over- and underestimation of the predictive variance is coupled together. Finally, we give our main result: MFVI overestimates variance, \textit{i.e.} is underconfident, for test points similar to the training data.
+Formal proofs of all our theorems are in Appendix \ref{ap:proofs}. 
+
+\paragraph{MFVI predictions underestimate uncertainty for isotropic test points.}  We begin by considering the setting where the test distribution is isotropic, $x \sim N(0, \I_P)$. This corresponds to the assumption that test points are equally likely to arrive from any direction in the input space, a setting in which we would expect MFVI's tendency to underestimate variance to manifest clearly. Indeed, in this setting, we recover the standard result that MFVI is overconfident.
+
+To see this, we note that the expected predictive variance under an isotropic test distribution is simply the trace of the posterior covariance:
+\begin{equation}
+    \expectation{x \sim N(0, \I_P)}{x^\top A x} = \Tr{A}
+\end{equation}
+for any matrix $A$. The following lemma then follows directly from proving that the trace of the exact posterior is greater than the MFVI posterior, which we do in  Lemma~\ref{th:tr-inequality}.
+\begin{lemma}
+    \label{th:isotropic-pred-var}
+    For a test point $x\sim N(0, \I_P)$, the predictive variances of the MFVI posterior and exact posterior are governed by 
+    \begin{equation}
+        \expectation{x\sim N(0, \I_P)}{x^\top \posterior x} \geq \expectation{x\sim N(0, \I_P)}{x^\top S^* x}.
+    \end{equation}
+\end{lemma}
+
+This result aligns with the standard understanding that MFVI underestimates uncertainty. However, the assumption of isotropic test data is often unrealistic: in practice, we expect test points to follow a similar distribution to the training data. We now turn to this more realistic setting.
+
+
+% Consider a test input, $x \sim N(0, \I_P)$.  we should expect the variance of the MFVI posterior prediction to be less than that of the true posterior. 
+% This bound on the trace gives us the result we described at the beginning of this section, by noting 
+% \begin{equation}
+%     \expectation{x \sim N(0, \I_P)}{x^\top \posterior x} = \Tr{\posterior}, 
+% \end{equation}
+% \begin{equation}
+% \expectation{x \sim N(0, \I_P)}{x^\top S^* x} = \Tr{S^*}, 
+% \end{equation}
+% so Lemma~\ref{th:tr-inequality} is equivalent to showing that under isotropic Gaussian inputs, the predictive variance from Lemma~\ref{th:tr-inequality} is greater for the true posterior than that of the MFVI approximation.
+
+% \begin{lemma} [Trace Inequality.]\label{th:tr-inequality}
+% The trace of the MFVI posterior and the true posterior are governed by
+% \begin{equation}
+%     \Tr{\posterior} \geq \Tr{S^*}.
+% \end{equation}
+% \end{lemma}
+% These results are very closely related to the fact that MFVI underestimates uncertainty in the parameter space \citet{margossian2023shrinkage}, and do provide a genuine sense in which the MFVI posterior does underestimate uncertainty. However, often the assumption that the distribution of test points will be isotropic is incorrect for regression problems. We will now explore more realistic settings. 
+
+
+
+
+
+
+
+
+% In this section we present the main theoretical results of this paper, all of which are designed to reinforce the central idea of this paper: that MFVI overestimates epistemic uncertainty in important ways for iid data. The first result which we prove is that, if we assume that the input covariance follows the Maximum Likelihood Estimate (MLE), the optimal MFVI distribution will overestimate epistemic uncertainty in the direction which data is most likely to lie. The second result which we prove is that there is a particular sense in which the MFVI posterior is well calibrated, in that by this measure it overestimates and underestimates epistemic uncertainty by equal amounts. Finally, building from this intuition we prove the main result of the paper, that for the Maximum Likelihood Estimate (MLE) of the input covariance, we should expect the MFVI predictions to overestimate the uncertainty compared to the true posterior. 
+
+
+\paragraph{MFVI overestimates uncertainty along the first principal component of the training data.} The first result we use to argue that MFVI overestimates uncertainty is to show that there is a direction in the input space where, if MFVI and exact posterior predictions are not equal, the MFVI posterior overestimates the predictive uncertainty. 
+
+This direction is the span of the eigenvector of the minimum eigenvalue of the true posterior, that is, for a test point  $\tilde x \in \text{span}(v_{q^*})$ where $\delta_{min} = v_{q^*}^\top \posterior v_{q^*}$. 
+\begin{lemma}
+[Overestimation of predictive variance in one direction of the input space]
+\label{th:underconfident-pc}
+For points in the input space defined by $ \tilde x \in \text{span}(v_{q^*})$, the predictive variance for the exact posterior and the MFVI posterior are governed by the inequality 
+    \begin{equation}
+        \tilde x ^\top S^* \tilde x  \geq \tilde x^\top \posterior \tilde x.
+    \end{equation}
+\end{lemma} 
+The intuition for this is that the exact posterior predictive variance will be $\delta_{min}$, which, because the eigenvalues of the MFVI posterior are a harmonic mean of the exact eigenvalues, must be lower than the lowest eigenvalue and the lowest predictive variance of the MFVI posterior. 
+
+
+% In the common case of spherical priors, where the prior variance is given by $\prior$, the direction in which this underestimation occurs is of great significance: it is the first principal component of the training data. This can be seen by noting that the posterior covariance is given by 
+% %\begin{equation}
+%     $\posterior = \left(\precisionprior + \mbox{$\frac{1}{\likelihood}$}X^\top X \right)^{-1}$,
+% %\end{equation}
+% and that, for positive definite matrices such as the posterior, neither adding an identity matrix nor inverting changes the eigenbasis. Hence the eigenbasis $\{v_q\}_{q=1}^P$ is not only the eigenbasis of the true posterior, it is the eigenbasis of the empirical Gram matrix $X^\top X $. If we denote the MLE of the covariance of the input data as $\hat \Gamma = \frac{1}{N} X^\top X = \sum_{q=1}^P v_q v_q^\top \gamma_q$, the posterior eigenvalues are given by 
+% \begin{equation}
+%     \delta_q = \frac{1}{\alpha + \frac{N}{\likelihood}\gamma_q}.
+% \end{equation}
+% This means that the minimum posterior eigenvalue of the true posterior $\delta_{min}$ is associated with the same eigenvector as the maximum eigenvalue of the empirical covariance $\gamma_{max}$, that is, the first principal component of the data (the direction in the input space where the maximum variance was observed). 
+
+In the common case of spherical priors, where the prior variance is given by $\prior$, the relative size of the posterior eigenvalues are entirely determined by the variance of the training data. This means that the direction in which this underestimation occurs is of great significance: it is the first principal component of the training data. More formally we can state the following theorem. 
+% \begin{theorem}
+%     Consider a conjugate linear model with a spherical prior, $\prior$, which is fit on a set of training data inputs, $X$, that have principal component $w $.  In this model, the predictive variances for any test point, $\tilde x \in \text{span}(w)$, for the MFVI posterior, $\tilde x^\top S  \tilde x $, and the exact posterior, $\tilde x^\top \posterior \tilde x$, will be given by $\tilde x^\top S  \tilde x \geq \tilde x^\top \posterior \tilde x $.
+%     \label{th:pc-remark}
+% \end{theorem}
+\begin{theorem}
+\label{th:pc-remark}
+Consider the conjugate Bayesian linear model of \cref{eq:linear-regression} with a spherical prior $\theta \sim N(0, \prior)$, and let $w$ denote the first principal component of the training inputs $X$. Then for any test point $\tilde x \in \text{span}(w)$, the predictive variances of the MFVI and exact posteriors satisfy
+\begin{equation}
+    \tilde x^\top S^* \tilde x \;\geq\; \tilde x^\top \posterior \tilde x.
+\end{equation}
+\end{theorem}
+The proof follows from noting that, for spherical priors, the exact posterior shares an eigenbasis with the gram matrix of the training data, $X^\top X$, so $w = v_{q^*}$ and Lemma~\ref{th:underconfident-pc} can be applied to give the desired result.
+
+
+
+
+
+
+\paragraph{MFVI under- and overestimates uncertainties similarly.} We can take the above result and strengthen it by showing that the degree of overestimation and underestimation of the predictive density are linked.
+To do this, we introduce the ratio of the predictive variances at test point $x$, 
+\begin{equation} \label{eq:ratio-of-vars}
+    R(x) = \frac{x^\top S^*  x }{x^\top \posterior x }. 
+\end{equation} 
+$R(x)>1$ implies an overestimated uncertainty and $R(x)\leq 1$ implies underestimated uncertainty. We can now consider the average value of this new quantity across the complete eigenbasis of the exact posterior, and we will find the following surprising result.
+\begin{lemma}
+[Calibrated MFVI]
+\label{th:calibrated-points}
+    Consider the set of eigenvectors of the true posterior $\{v_q\}_{q=1}^P$. For these points 
+    \begin{equation}
+     \frac{1}{P}\sum_{q=1}^P R(v_q ) = 1.  
+    \end{equation}
+\end{lemma}
+While we are unable to provide an intuitive explanation for why this is the case, the result can be found by first showing that $\Tr{\posterior^{-1}S^*}=P$, as we do in Lemma~\ref{th:conserved-trace}, and then performing straightforward algebra.  
+
+This constraint, that the average value of $R(x)$ is constant across eigenvectors of the true posterior, can cause problems for predicting in-distribution data. In particular, in high-dimensional settings, where many eigenvector directions have underestimated variance, the degree of overestimation in other directions must be large to compensate. We demonstrate an extreme version of this in \cref{sec:toy-example}.
+
+
+\paragraph{MFVI overestimates predictive variance for data with the empirical covariance.}
+So far, we have shown the following results: from Lemma~\ref{th:isotropic-pred-var} we can expect that there are a lot of directions in the input where the variance is underestimated, from Lemma~\ref{th:underconfident-pc} we can expect that for spherical priors the highest variance of the training data is underconfident, and from Lemma~\ref{th:calibrated-points} we know that the degrees of this overestimation and underestimation are coupled in some way. These results provide some intuition for our main theorem, which says that, for BLR problems with a spherical prior, MFVI overestimates predictive uncertainty for test data points distributed according to the empirical distribution of the training data, $\hat p(x)$. 
+\begin{theorem} \label{th:empirical_pred_var} 
+For test data points distributed according to  the empirical distribution $x\sim \hat p(x)$, the difference in the expected predicted variance of the MFVI and exact posterior is given by 
+    \begin{equation}
+        \expectation{x\sim \hat p (x)}{x^\top \posterior x -  x^\top S^*  x }  \leq 0 . 
+    \end{equation}
+\end{theorem}
+% \todo[color=green]{Not having the proof for the main theorem feels weird to me if we have other proof in the main text.}
+
+
+In our opinion, this is a pretty remarkable result: while MFVI can in most senses be considered to underestimate the epistemic uncertainty, in the very important case of predicting on test data which shares covariance with the training data, MFVI overestimates uncertainty. 
+
+\section{Cold MFVI posterior predictions can match Bayesian predictions}
+\label{sec:cold_posterior}
+
+\paragraph{The Cold Posterior Objective for MFVI.}  Cold posteriors describe exponentiated posteriors, $p_T(\theta| \data) \propto p(\data| \theta)^{1/T} p(\theta)^{1/T}$, where $T<1$. This exponentiation corresponds to sharpening the exact posterior, so more of the mass is concentrated around the Maximum A Posteriori (MAP) estimate. If, rather than minimising the KL divergence to the exact posterior, we minimise the KL divergence to the cold posterior, we get a variational posterior 
+\begin{equation}
+    q_T^*(\theta) = \min_{q(\theta)\in Q} \KL{ q(\theta)}{p_T(\theta|\data)}.
+\end{equation}
+We refer to this solution as the $T$-MFVI posterior. 
+For the specific conjugate case where the prior has the form $N(0, \alpha^{-1} \I_P)$ and the likelihood has the form $N(y|\theta^\top  x, \likelihood) $, the optimal parameters are
+\begin{equation}\label{equ:t_mfvi_post}
+    q_T^*(\theta) = N(m^*, T S^*),
+\end{equation}
+where $m^*$ and $S^*$ are the solutions at $T=1$ given in \cref{eq:mfvi_optimal_mean,eq:mfvi_optimal_cov}. We prove this in Appendix~\ref{ap:cold-posterior-proofs}. 
+
+\paragraph{Different Temperatures for Different Tasks.} When making predictions, there are several possible settings which would lead to different optimal temperatures. Intuitively, given the overestimation of variance in \cref{th:empirical_pred_var}, we may expect that there is an optimal temperature $T<1$ which will make the $T$-MFVI and exact posterior predictive distributions match most closely on in-distribution data. However, by Lemma~\ref{th:calibrated-points}, if there are some directions in the input space where the predictive variance is overestimated, there must also be locations where the predictive variance is underestimated. We can therefore deduce that there may be a temperature $T>1$ which would make out-of-distribution predictions better calibrated. 
+
+Furthermore, it is not immediately obvious with which measure to compare the variational and exact posteriors. There are multiple ways to measure distances between predictive distributions, each of which captures meaningful but different notions of similarity. 
+In our experiments in \cref{sec:experiments}, we examine both ID and OOD \ data, and consider multiple notions of distances to the true posterior. We confirm that we should expect cold temperatures ($T<1$) to perform well for ID data, and warmer temperatures for OOD \ data, and that this is generally true across multiple measures of discrepancy between distributions. 
+
+
+\textbf{Cold Posteriors vs. Tempered Posteriors.} There are two distinct types of sharpened posteriors: tempered posteriors, in which the prior is kept constant but the likelihood is scaled, and cold posteriors, in which both the likelihood and the prior terms are scaled \cite{aitchison2020statistical}. VI methods typically favour using a tempered approach, rather than the approach taken here, which fits naturally within the ELBO objective by simply scaling the expected log-likelihood compared to the KL term. It is not generally possible to write the cold posterior objective in such an elegant way, albeit with an exception for the Gaussian priors used here \cite{aitchison2020statistical}. In general, if the cause of the CPE is one of those in Section~\ref{sec:background}, we would advocate for the use of a tempered posterior. However, this paper is interested in how well predictions from an approximate posterior match predictions from an exact posterior, and in this case, we believe that there is a good reason to prefer the cold posterior to the tempered posterior. 
+
+Concretely, the cold posterior MFVI shares a mean with the $T=1$ posterior in our case (Multivariate Gaussians), while the tempered posterior does not. 
+%In the setting of MFVI for Multivariate Gaussians, the variational posterior matches the exact posterior mean exactly; 
+If we applied the tempered posterior, we would face a trade-off between the quality of our posterior predictive and the posterior mean and variance. The cold posterior avoids this trade-off by maintaining the same mean for all values of $T$. 
+
+% \textcolor{red}{This is one example of a key, but subtle, difference between these two approaches: cold posteriors preserve information about the exact $T=1$ posterior, while tempered posteriors do not. That is to say, given $p(\theta|\data)$ the distribution $p_T(\theta|\data)$, for any value of $T$, can be constructed without knowledge of either the prior or the training data. This is not true for the tempered posterior, where it would be necessary to know the relative contributions from the likelihood and the prior. In our setting,  this property of information preservation between temperatures is carried over to the variational approximation, so given $q(\theta)$ the distribution $q_T(\theta)$ can be found for any value $T$ without any additional data. }
+
+% \textcolor{red}{The fact that at all temperatures of variational posterior contain the same information about the exact posterior, but (as we will demonstrate in Section~\ref{sec:experiments}) the posterior predictive distribution can be matched more closely by scaling the temperature has a profound implication:  the simple push forward distribution of the variational posterior is not the optimal method to use the information about the exact posterior for every task. Instead of the temperature causing the variational posterior to learn different features of the posterior, the temperature is just indicating how useful the features of the exact posterior which it has learned are for a given task.   }
+
+
+% While this would not be universally true, due to VI's ability to recover important features of the posterior \cite{margossian2024variational} we believe that there is a chance that this result may be more general. 
+
+
+
+% \textcolor{red}{Practialy, this implies that rather than selecting $T$ at the beginning of training, the model can be trained with $T=1$, then the temperature can be selected after training. This is similar in concept to \citet{giordano2015linear, giordano2018covariances} \todo[color=green]{Would it be appropriate to also compare this to Emti's posterior correction paper here?} where MFVI training can be fit into an initial optimization, followed by a post-training step which improves the the performance of the model. However, unlike those methods, the improved performance is not because the $T$-MFVI posterior has captured more information about the true posterior and does not require access to the training data. Instead improvements in performance from the $T$-MFVI must come from making better use of the same information for a specific task. } 
+
+
+
+
+
+
+\section{Experiments}
+
+
+\subsection{Pathological example: Low Rank Linear Regression}
+\label{sec:toy-example}
+% \begin{figure}[t!]
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figs/toy_illustration/prediction_analysis_iid.pdf}
+%     \includegraphics[width=0.95\linewidth]{figs/toy_illustration/prediction_analysis_ood.pdf}
+%     \caption{Figure showing the CPE strength, along with the prediction density at 3 different temperatures.  At low dimensions the MFVI posterior predictive closely matches the true value, the CPE is small, the $T_{crit}$ is close to one. As the number of dimensions increases, the strength of the CPE increases, the MFVI prediction at $T=1$ tends towards the prior predictive density. \todo[inline]{Add $T_{crit}$ to ood, and add caption for ood. Change axis and labels to be correct for the prdiction.  }}
+%     \label{fig:placeholder}
+% \end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figs/toy_illustration/prediction_viz_iid_combined_v2.pdf}
+\caption{Posterior predictive densities at an in-distribution test point $x = \frac{1}{\sqrt{P}} \mathbf{1}_P$ for (a) $P = 2$ and (b) $P = 1024$. 
+For $P=2$, MFVI at $T=1$ (dashed line) closely matches the exact posterior (green), while for $P=1024$, MFVI at $T=1$ is nearly indistinguishable from the prior (blue), confirming Proposition~\ref{th:toy_mfvi_prior_pred}. 
+In both cases, an appropriate cold temperature (light-coloured lines) recovers the exact posterior predictive. 
+%Heavy lines show four key distributions: the prior predictive, the exact posterior, the MAP prediction, and MFVI at $T=1$. Light coloured lines show $T$-MFVI predictives for a range of temperatures. For $P = 2$, MFVI closely matches the exact posterior. For $P = 1024$, MFVI at $T=1$ is nearly indistinguishable from the prior, confirming Proposition~5.1. In both cases, an appropriate cold temperature recovers the exact posterior predictive.
+}    \label{fig:pred-density}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figs/toy_illustration/nll_analysis_iid_combined_v2.pdf}
+    \caption{Test NLL as a function of temperature for ID\ test data, averaged over 10,000 repetitions, for (a) $P = 2$ and (b) $P = 1024$. Horizontal lines indicate the NLL of the exact posterior and the MAP solution. In both cases, an optimal temperature exists where the $T$-MFVI predictive matches the exact posterior. In high dimensions, this optimal temperature is much lower, the improvement from tuning $T$ is much larger, and the MFVI solution at $T=1$ performs far worse than the MAP.}
+    \label{fig:nll-iid}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figs/toy_illustration/nll_analysis_ood_combined_v2.pdf}
+    \caption{Test NLL as a function of temperature for OOD\ test data orthogonal to the training subspace, averaged over 10,000 repetitions, for (a) $P = 2$ and (b) $P = 1024$. For $P = 2$, the pattern is reversed compared to the ID\ case: warm posteriors ($T > 1$) improve performance. For $P = 1024$, MFVI at $T = 1$ already closely matches the exact posterior, so the optimal temperature is approximately $T \approx 1$.}
+    \label{fig:nll-ood}
+\end{figure}
+
+
+
+
+We now examine an extreme case that makes the pathology from Section~\ref{sec:theory} maximally severe.\footnote{We make our code available at \url{https://github.com/jamesacodgers/mfvi-cpe}.} Consider training data confined to a non-axis-aligned rank-1 subspace: $x = \varepsilon \mathbf{1}_P$ where $\varepsilon \sim \mathcal{N}(0, \beta)$. This is a direct generalization of the illustrative example from Figure~\ref{fig:toy-illustration} to arbitrary dimension $P$. The setup ensures that only a single direction of the exact posterior is informed by the data, while the remaining $P-1$ directions retain the prior variance $\alpha^{-1}$. Figure~\ref{fig:toy-illustration} showed that MFVI overestimates predictive variance along the data direction $x_1 = x_2$; we now show that this overestimation becomes increasingly severe as the dimension grows, to the point where MFVI fails to reduce predictive variance compared to the prior at all.
+
+\begin{proposition} \label{th:toy_mfvi_prior_pred}
+    In this setting, as $P \to \infty$, for any test input $x\in \R^P$, the posterior predictive variance of the MFVI posterior will be given by 
+    \begin{equation}
+        x^\top S^* x = \alpha^{-1} || x ||_2^2,
+    \end{equation}
+    where $\alpha$ is the prior precision. 
+\end{proposition}
+The proof is in Appendix~\ref{sec:low-rank-proofs}, and the intuition is as follows: Each MFVI variance $d_p^*$ is a weighted harmonic mean of the exact posterior eigenvalues (Lemma~3.2). In our rank-1 setting, these eigenvalues consist of one small value $\delta_{\min}$ (corresponding to the data direction) and $P-1$ values equal to the prior variance $\alpha^{-1}$. As $P$ grows, the prior eigenvalues dominate the harmonic mean, and the information from the single data direction is diluted across all $P$ axis-aligned components.
+
+
+Figure~\ref{fig:pred-density} illustrates this effect for in-distribution test data. We evaluate at a test point $x = \frac{1}{\sqrt{P}} \mathbf{1}_P$, which lies in the data subspace and has unit norm. The figure shows posterior predictive densities for $P = 2$ (left) and $P = 1024$ (right). We highlight four key distributions: the prior predictive (which has not seen any data), the exact posterior predictive, the MAP prediction (which has zero epistemic uncertainty), and the MFVI posterior predictive at $T=1$. For $P = 2$, the MFVI predictive closely matches the exact posterior: the approximation is working well. However, for $P = 1024$, the MFVI predictive at $T=1$ is nearly indistinguishable from the prior, despite the exact posterior remaining well-concentrated. This confirms the limiting behaviour of Proposition~\ref{th:toy_mfvi_prior_pred}: in high dimensions, MFVI has failed to incorporate the information from the training data into its predictions.
+
+The coloured lines show $T$-MFVI predictives for a range of temperatures. As $T \to 0$, these interpolate smoothly from the MFVI solution toward the MAP prediction. Since the exact posterior predictive lies between these two extremes, there exists a critical temperature $T^* < 1$ for which the $T$-MFVI and exact posterior predictions match exactly. Crucially, because all training data lies on a single subspace, this temperature simultaneously corrects the predictive variance for \emph{all} in-distribution test points.
+
+Figure~\ref{fig:nll-iid} shows the test negative log-likelihood (NLL) as a function of temperature, averaged over 10,000 repetitions. The test set is generated ID\ from the same distribution as the training data, so test points also lie in the $\mathbf{1}_P$ subspace. For both $P = 2$ and $P = 1024$, lowering the temperature initially improves performance until a minimum is reached, where the $T$-MFVI predictive closely matches the exact posterior. Beyond this point, further cooling degrades performance as the predictive approaches the MAP solution. 
+
+Three key differences emerge between low and high dimensions. First, the optimal temperature for $P = 1024$ is much lower than for $P = 2$, reflecting the greater severity of the MFVI overestimation in high dimensions. Second, the potential improvement from tuning $T$ is far greater for $P = 1024$: the gap between MFVI at $T=1$ and the exact posterior is substantial, whereas for $P = 2$ it is small. Third, the penalty for setting $T$ too low is much smaller than for setting $T$ too high. In the limit $T \to 0$, the $T$-MFVI predictive converges to the MAP solution, which has zero epistemic uncertainty, while at $T = 1$ the MFVI predictive can approach the prior (as shown in Proposition~\ref{th:toy_mfvi_prior_pred}). For well-specified problems where the data is informative, the exact posterior variance lies much closer to zero than to the prior variance, so the MAP incurs a far smaller penalty than MFVI at $T=1$.
+
+
+To emphasize that no single temperature is universally optimal, we now consider predictions for test points orthogonal to the training data. Specifically, we evaluate at $x = \frac{1}{\sqrt{P}} \mathbf{1}_P^{\pm}$, where $\mathbf{1}_P^{\pm}$ is a balanced binary vector with half the entries equal to $+1$ and half equal to $-1$. This direction is orthogonal to the training subspace, so the exact posterior does not reduce predictive uncertainty compared to the prior. Figure~\ref{fig:nll-ood} shows the test NLL for this OOD\ setting. For $P = 2$, the pattern from the ID\ case is reversed: warm posteriors ($T > 1$) now yield predictions closer to the exact posterior. This is because MFVI underestimates the predictive variance in directions orthogonal to the data, and increasing the temperature corrects this. For $P = 1024$, the picture is different: since there are so many directions orthogonal to the single data direction, and MFVI averages over all of them, the MFVI predictive variance in any one orthogonal direction is already close to the prior, and hence close to the exact posterior. The optimal temperature is therefore approximately $T \approx 1$. These results highlight that the optimal temperature for matching the posterior prediction is task-dependent and, for our setting at least, the  CPE arises as a natural method to match the exact Bayesian prediction on in-distribution prediction tasks.
+
+
+
+
+
+\subsection{Basis function regression}
+\label{sec:experiments}
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs/toy_illustration/fixed_basis_P16_v2.pdf}
+        \subcaption{Low dimensional feature space $(Q=16)$}
+        \label{fig:sinc-regression-16}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs/toy_illustration/fixed_basis_P1024_v2.pdf}
+        \includegraphics[width=0.95\linewidth]{figs/toy_illustration/fixed_basis_legend_v2.pdf}
+        \subcaption{High dimensional feature space $(Q=1024)$}
+        \label{fig:sinc-regression-1024}
+    \end{subfigure}
+    \caption{
+    Predictions and credible intervals for fixed basis function regression with \textit{(a)} $Q = 16$  and \textit{(b)} $Q = 1024$  basis functions. MFVI with $T=1$ significantly overestimates the variance of the exact posterior on in-distribution data, and lower temperatures correct this.
+    % Predictions and credible intervals for fixed basis function regression with $P=16$ and $P=1024$ basis functions. For $P=16$ the MFVI prediction does a reasonable job of matching the true posterior's predictive variance where the data is and the cold posteriors underestimate epistemic uncertainty, however for $P=1024$ the MFVI posterior with $T=1$ massively overestimates the predictive uncertainty and cold posteriors allow result in predictions which more closely match the true posterior. The third plot shows how the reciprocal of the eigenvalues of the exact posterior, $1/\delta_p$ decay as a function of the fraction of the total number of eigenvalues $p/P$. In the high number of basis functions case only a tiny fraction of the eigenvalues are not equal to the prior variance of $1$, so while in the low number of basis functions there is a relatively large fracion number of eigenvalues which differ significantly from the prior value, making the approximation better.
+    }
+    \label{fig:fixed-basis-fuction}
+\end{figure}
+% \begin{figure*}[t!]
+%     \centering
+%     \includegraphics[width=\linewidth]{figs/toy_illustration/fixed_basis_function_icml_v3.pdf}
+%     \caption{Predictions and credible intervals for fixed basis function regression with $P=16$ and $P=1024$ basis functions. For $P=16$ the MFVI prediction does a reasonable job of matching the true posterior's predictive variance where the data is and the cold posteriors underestimate epistemic uncertainty, however for $P=1024$ the MFVI posterior with $T=1$ massively overestimates the predictive uncertainty and cold posteriors allow result in predictions which more closely match the true posterior. The third plot shows how the reciprocal of the eigenvalues of the exact posterior, $1/\delta_p$ decay as a function of the fraction of the total number of eigenvalues $p/P$. In the high number of basis functions case only a tiny fraction of the eigenvalues are not equal to the prior variance of $1$, so while in the low number of basis functions there is a relatively large fracion number of eigenvalues which differ significantly from the prior value, making the approximation better.}
+%     \label{fig:fixed-basis-fuction}
+% \end{figure*}
+
+In order to illustrate that our results from linear regression can provide a useful intuition for general Machine Learning problems, we switch our setting to Basis Function Regression. Here, we assume that we have data $\data = \{X, Y\}$, but we want to find relationships which would be non-linear in the original space. This can be done by defining a function $\phi: \R^P \to \R^Q, \; q =1, \dots, Q $, and modelling the relationship between input and outputs by a weighted sum of these functions, so 
+\begin{equation}
+    y_n = \theta^\top \phi(x) + \epsilon. 
+\end{equation}
+This problem is identical to the linear regression one introduced in \cref{eq:linear-regression}, but with inputs $\phi(x)$ rather than $x$. This type of system would typically be fitted with kernel methods, and be described as a Gaussian Process (GP) \cite{10.7551/mitpress/3206.001.0001}. Here, we wish to see the effects of MFVI in the parameter space, so we restrict ourselves to finite values of $Q$, and calculate explicit values for $q(\theta)$, just as in the linear regression case. For our experiments, the function $\phi(\cdot)$ can either be fixed or have hyperparameters which can be learned by maximizing the marginal likelihood, as with any other GP. We use Radial Basis Functions (RBF) as our basis functions for our experiments, with the lengthscale and centroids as hyperparameters. See \cref{app:impl_dets} for more details.
+
+\paragraph{Sinc toy data.} To illustrate the underconfidence pathology we fit a $\text{sinc}(x)$ function using RBF basis functions with fixed lengthscale $0.25$. This lengthscale is quite high compared to the spacing of the data, meaning that the inputs in feature space, $\phi(x)$,  are close together and the empirical input covariance will have very different eigenvalues. We fit the data twice: once with $Q=16$ centroids, and once with $Q=1024$ and show the results in \cref{fig:fixed-basis-fuction}. The true posterior prediction is very similar for both of these, however, the MFVI predictions differ markedly. The MFVI prediction with $Q=16$ matches the true posterior well, but the MFVI prediction with $Q=1024$ is highly overinflated, matching the intuition from \cref{sec:toy-example} that high-dimensional settings amplify the effect of posterior prediction mismatch. 
+
+% \paragraph{UCI regression.} To illustrate our data in a slightly more realistic setting we use the UCI dataset \todo{cite}. Specifically we use the 9 datasets used by \todo{cite}. All of these datasets have likelihoods which can be approximated reasonably with Gaussians, making our results so far somewhat applicable, although we do not have access to the true prior or likelihood so we must now try and approximate these, which we do by maximizing the log-marginal-likelihood \todo{cite} of the exact posterior. 
+% We then fit the exact posterior, and the MFVI posterior and use the fact that temperature is equivalent to scaling the variational posterior variance to calculate all $T$-exact and $T$-MFVI posteriors. \todo{I need to introduce $T$-exact.}
+
+\paragraph{UCI regression.} To show how our theoretical insights translate to real-world problems, we consider several regression tasks from the UCI repository \citep{kelly2023uci}, specifically the set used in \citet{foong2019between}. Each data set is split into a train set, an in-distribution test set (ID Test)  and an out-of-distribution test set (OOD Test). Using $Q=500$ RBF basis functions, we train the hyperparameters as described above. We then analytically determine the mean and covariance of both the true and the $T$-MFVI posteriors (see \cref{equ:true_post,equ:t_mfvi_post}) as well as the associated posterior predictive distributions. We distinguish the joint posterior predictive for a test set, $(X, Y)$, and the marginal one, for a test point, $(x,y)$. The marginal true posterior predictive at an input, $x$, is given by
+\begin{align}
+    p(y \mid x, \mathcal{D})
+    & = \mathcal{N}(y ; \mu^\top x, x^\top \Sigma x + \sigma^2 ),
+\end{align}
+with $\mu$ and $\Sigma$ from \cref{equ:true_post}. In addition to the marginal predictions we also consider the distance between the joint predictive distributions, where the covariances are $X\Sigma X^\top + \sigma^2 \I $ and $TX S^* X^\top + \sigma^2\I$ respectively.
+
+
+% The marginal $T$-MFVI posterior predictive is 
+% \begin{align}
+%     q_T(y \mid x, \mathcal{D})
+%     & = \mathcal{N}(y ; {m^*}^\topx, Tx^\topS^* x + \sigma^2 ),
+% \end{align}
+% with $m^*$ and $S^*$ from \cref{eq:mfvi_optimal_mean,eq:mfvi_optimal_cov}.
+% For the joint posterior predictives, we have 
+% \begin{align}
+%     p(Y \mid X, \mathcal{D}) 
+%     & = \mathcal{N}(Y ; X\mu, X\Sigma X^\top + \sigma^2 I ),
+% \end{align}
+% and
+% \begin{align}
+%     q_T(Y \mid X, \mathcal{D})
+%     & = \mathcal{N}(y ; Xm^*, TXS^*X^\top + \sigma^2 I).
+% \end{align}
+
+
+We are interested in establishing which temperature $T^*$ most closely matches the exact Bayesian model. However, as discussed in \cref{sec:cold_posterior}, it is not clear how to decide how to measure the closeness between these distributions. For this reason we consider a number of statistical divergences between the true and the $T$-MFVI posterior predictives: forward KL $(\KL{p(y| x, \data)}{q_T(y| x )})$, reverse KL $(\KL{q_T(y| x )}{p(y| x, \data)})$, $\alpha$ divergences $(D_\alpha$, for $\alpha = 0.5)$, Wasserstein-2 distance $(W_2({q_T(y| x )},{p(y| x, \data)}))$, and the distance between predictive variances as measured by the Frobenius norm ($\|\Sigma_p - \Sigma_{q_T}\|_F^2$). The temperature  $T^*$ minimising a given divergence is recorded for $15$ independent train, ID test and OOD\ test splits of the data, and shown in \cref{fig:opt_T}. 
+
+A clear pattern across all divergences and all datasets can be observed, where for the training and ID test sets, all measures of divergence are minimised by $T<1$. 
+Meanwhile, predictions on the OOD test set always require higher temperatures than the ID test set, and, while the precise temperature will depend on the divergence used and distribution of training and OOD test points, often take values of $T>1$.
+This pattern is nicely in line with our main theoretical result, \cref{th:empirical_pred_var}, stating that the MFVI prediction will overestimate predictive uncertainty on the training data, but must underestimate predictive variance in directions with less variance in the training data to maintain the calibration criterion we give in Lemma~\ref{th:calibrated-points}. 
+
+
+\Cref{app:impl_dets} contains additional details on the divergences, data pre-processing and hyperparameter selection. % via the marginal likelihood.
+
+
+\begin{figure}[t!]
+    \centering  
+  \includegraphics[width=\linewidth]{figs/uci/kin8nm_violin.pdf}
+    \caption{The temperature minimising a given divergence between the true posterior predictive, $p(\cdot| \cdot, \data)$, and the $T$-MFVI predictive, $q_T(\cdot)$, on the train, ID, and OOD test sets. It can be seen that the optimal temperatures for the train and ID test set are significantly lower than for the OOD test set. For the marginal divergences, the OOD points frequently require a warm posterior ($T>1$), while predictions at the train and ID test points benefit from a cold posterior ($T<1$). For the joint divergences, this ordering of $T^*$ across the three sets is preserved. Results are shown on the UCI kin8nm data set with $Q = 500$ fixed RBF basis functions.}
+    \label{fig:opt_T}
+\end{figure}
+
+\subsection{MFVI underconfidence in BNNs}
+
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/BNNs/small_bnn_ivon_arch_comparison.pdf}
+        \subcaption{Small BNN (depth $2$, width $16$)}
+        \label{fig:ivon-small}
+    \end{subfigure}
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/BNNs/large_bnn_ivon_arch_comparison.pdf}
+        \subcaption{Larger BNN (depth $2$, width $512$)}
+        \label{fig:ivon-large}
+    \end{subfigure}%
+    \caption{
+    Plot showing the mean and credible interval for a small (\cref{fig:ivon-small}), and large (\cref{fig:ivon-large}) BNN trained with IVON. 
+    Similar to the basis function regression in Figure~\ref{fig:fixed-basis-fuction}, as the number of parameters of the BNN increases the MFVI model becomes less confident over the region where the data was observed. 
+    % \textcolor{red}{Change the CI color}
+    }
+    \label{fig:bnn}
+\end{figure}
+
+
+% While our theoretical analysis has focused on BLR, the CPE is primarily observed in BDL, where MFVI is also known to exhibit underconfident predictive distributions in certain settings \cite{coker2022wide}. A natural question is therefore whether the mechanism we identify here, the overestimation of predictive variance on in-distribution data, also operates in BNNs.
+
+
+% A key prediction of our theory is that the MFVI approximation will perform worse when regression takes place in a high-dimensional parameter space but the data concentrates near a low-dimensional subspace. This follows from the conservation law (Lemma~\ref{th:calibrated-points}): the average ratio of MFVI to exact predictive variance across posterior eigenvectors is fixed at one, so as the number of uninformed directions grows, the overestimation along the few data-informed directions must become increasingly severe to compensate. It is revealing to consider the loss landscape implied by this structure. The Hessian of the log-posterior will be nearly flat in most directions, controlled only by the prior, and sharp in only the few directions where the data provides information. This is precisely the Hessian structure of the loss which has been observed in Deep Learning \cite{sagun2016eigenvalues}, and this structure may be similarly pathological for MFVI in deep learning. 
+
+% To provide preliminary evidence that this mechanism operates beyond conjugate models, we train two BNNs on 1D sinusoidal data using IVON \cite{shen2024variational}, an MFVI optimizer for deep learning. Figure~\ref{fig:bnn} compares a small network (depth 3, width 16) with a larger network (depth 2, width 512). Both networks were fit with full batch training, used a small learning rate ($1^{-6}$) and were trained for a long time to reach convergence ($10^6$ steps). 
+% Despite the mean of both networks fitting the data reasonably well, the large network exhibits substantially wider credible intervals in the region where training data is observed. This mirrors the basis function regression result in Figure~\ref{fig:fixed-basis-fuction}: increasing the dimensionality of the parameter space while keeping the data fixed led to a higher predictive variance on in-distribution inputs. 
+
+% \subsection{Discussion}
+% \begin{itemize}
+%     \item BNN prior reversion fitting
+%     \item Data manifold (in feature space)
+%     \item Put into context of linear regression
+% \end{itemize}
+
+While our paper has focused on the linear setting, the CPE is primarily of interest in Bayesian Deep Learning (BDL). A natural question is therefore whether the results we identify here also hold in BNNs. While a complete investigation of BNNs is beyond the scope of this work, there are some conceptual similarities between the setting we have studied and BDL, which we lay out here. 
+
+The key insight from our paper is that MFVI will overestimate predictive variance on ID data and underestimate predictive variance on OOD data in the linear regression setting. Both of these effects have previously been observed in MFVI-BNNs for special settings: \citet{foong2019between} showed that MFVI-BNNs' predictive variance underestimates the true posterior in certain OOD inputs, and \citet{coker2022wide} showed that certain MFVI-BNNs' predictions on ID data revert to the prior as the network width increases.
+
+
+Additionally, a key prediction of our theory is that the MFVI over- and underestimation of predictive variance will be worse when the regression takes place in a high-dimensional parameter space, but the data concentrates near a low-dimensional subspace. 
+% This follows from the calibration rule we give in  Lemma~\ref{th:calibrated-points}: the average ratio of MFVI to exact predictive variance across posterior eigenvectors is fixed to one, so as the number of uninformed directions grows, the overestimation along the few data-informed directions must become increasingly severe to compensate. 
+It is revealing to consider the loss landscape implied by this structure. The Hessian of the log-posterior will be nearly flat in most directions, controlled only by the prior, and sharp in only the few directions where the data provides information. This is precisely the Hessian structure of the loss that has been observed in deep learning \cite{sagun2016eigenvalues}. 
+
+To provide preliminary evidence that this mechanism operates beyond conjugate models, we train two BNNs on 1D sinusoidal data using IVON \cite{shen2024variational}, an MFVI optimizer for deep learning. Figure~\ref{fig:bnn} compares a small network (depth 2, width 16) with a larger network (depth 2, width 512). 
+% Both networks were fit with full batch training, used a small learning rate ($1^{-6}$) and were trained for a long time to reach convergence ($10^6$ steps). 
+Despite the means of both networks fitting the data reasonably well, the larger network exhibits substantially wider credible intervals. This mirrors the basis function regression result in Figure~\ref{fig:fixed-basis-fuction}: increasing the dimensionality of the parameter space while keeping the data fixed leads to a higher predictive variance. We believe that the overestimation of predictive variance on in-distribution data described here may explain the success of recently developed non-mean field variational posteriors \citep{fadel2025viking}. 
+
+\section{Conclusion}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\linewidth]{figs/toy_illustration/bnn_ivon_arch_comparison.pdf}
+%     \caption{Figure showing the predictions from IVON on a toy dataset. As with the toy basis function regression, as the number of parameters is increased, the over-inflation of the posterior predictive distribution appears to increase, suggesting that these results may generalize to the non-conjugate case.}
+%     \label{fig:placeholder}
+% \end{figure}
+
+
+
+
+
+
+% An important fact to note about the analysis presented here is that it is \textit{not} equivalent to proving MFVI will make underconfident predictions on $ID$ training and test data, as our analysis ignores finite sample errors in the estimated input covariance. This effect could be ignored by considering the case where the number of data points tends to infinity, however in that case the epistemic uncertainty would shrink to nothing, making the results meaningless. Research specifically addressing the finite element errors would significantly strengthen the theory presented here. 
+
+
+In our paper, we have compared the predictions from the MFVI posterior and the exact posterior in conjugate linear regression. We have provided both theoretical and empirical evidence that, while MFVI shrinks variance in parameter space and for OOD predictions, MFVI can inflate predictive variance on ID data, which can lead to a strong CPE when data is constrained close to a low-rank linear subspace. While it is very common for approximate inference algorithms to assess predictions on both ID and OOD data \citep[e.g.,][]{shen2024variational, fadel2025viking}, much of the theoretical analysis of variational inference focuses on the parameter space and ignores the predictive behavior \citep{wainwright2008graphical,margossian2023shrinkage, margossian2024variational,  margossian2025variational, zellinger2026even, marks2026symmetry}. We show that this analysis can miss important effects when the inputs are highly structured, and we hope that our work can influence other researchers to analyze the impacts of approximate Bayesian algorithms on predictions at different input locations. 
+
+
+
+% Our analysis was to switch from analysing the approximate posterior in parameter space to analysing predictions from the approximate posterior at different locations in the input space. We have provided both theoretical and empirical evidence that, while MFVI shrinks variance in parameter space, it can inflate variance on in-distribution prediction tasks. We have presented strong evidence that, when using an approximate Bayesian method for prediction, finding a good approximation in parameter space is not sufficient to ensure a good approximation of the posterior predictions.
+
+% Additionally, the setting where MFVI can be significantly underconfident, where data clusters in a low-rank input subspace, could be significant for BDL. The low rank input data leads  to a loss landscape dominated by a small number of eigenvalues in parameter space, a common situation in Deep Learning \cite{sagun2016eigenvalues}. 
+
+
+
+% A further weakness of this theory is that it assumes that the MFVI posterior has been fitted to optimality, whereas this may not be the case in reality, where stochastic optimisation is used. 
+% %in reality this will rarely be the case for large systems where Stochastic Optimisation would need to be used. 
+% A line of research which we have not explored here is how close to optimality a Variational Posterior needs to be for similar results to be valid. 
+
+
+
+% \paragraph{How to think about $T$-MFVI in BLR.} \textcolor{red}{ This paper should not be understood as an argument for generally applying cold posteriors in parameter space when performing MFVI. 
+% % An important point to clarity is that this paper is not an argument in favour of using cold posteriors as objectives during training in general---there are good reasons not to apply that approach. 
+% In this paper we demonstrated that for, the case of BLR specifically, selecting a temperature is equivalent to scaling the output variance, and that scaling the output variance can achieve predictions which are closer to the exact Bayesian Posterior Predictive distribution for various specific tasks. We also noted that, again specifically for BLR, this scaling from a MFVI posterior to a $T$-MFVI posterior does not cause the MFVI parameter approximation to gain or loose any information about the true posterior. This raises an interesting question: what mechanism is allowing the $T$-MFVI posterior predictive distribution to match the exact posterior predictive distribution if it is not gaining information about the exact posterior? We suggest that in the BLR setting, selecting temperature $T$ is best thought of not as simultaneously adapting the prior and likelihood to give a new distribution in parameter space, but as adapting the mapping from the parameter space to the prediction space. Follow on work will focus on this question of whether using the different mappings from parameter space to prediction for MFVI and the exact posterior 
+% }
+
+\section*{Impact Statement}
+This paper presents work whose goal is to advance the field of machine learning. There are many potential societal consequences of our work, none of which we feel must be specifically highlighted here. 
+
+
+\subsection*{Acknowledgments}
+
+We thank Thomas M\"{o}llenhoff and Emtiyaz Khan for helpful discussions.
+VF was supported by the Branco Weiss Fellowship.
+
+
+
+
+% , so could be adapted to new tasks indefinitely without   
+
+
+% Although the argument in \cref{sec:cold_posterior} about all $T$-MFVI posteriors capturing the same information is specifically only valid for BLR, it is interesting that scaling the variational posterior---which does not add or subtract any information about the true posterior---can in this case result in predictions which are significantly more similar to the predictions of the true posterior than the $T=1$ predictions for a specific task. 
+% In a speculative spirt, we could suggest that this implies that the MFVI posterior from the training data can contain more useful information about the exact posterior predictions than is used by the $T=1$ prediction mechanism. 
+% Getting access to this additional useful information is not free and may require additional data to select a value for $T$ to adapt the predictions to a task. This idea of a MFVI posterior being capable of adapting to new scenarios without loosing information is not new and is reminiscent of \todo{cite knowledge adaptation}, However we would argue that the mechanism is different, rather than
+% adapting our variational posterior, which requires keeping track of the training data to achieve lossless results, the predictive scaling approach would allow improvements of a specific loss naturally, without gaining or loosing information about the MFVI posterior from the training set. } 
+
+% In our experiments in \todo{ref} we empirically illustrated that shrinking the predictive variance of the variational posterior can make the predictions closer to the true posterior by several measures in the linear regression setting, however we have not presented any underlying theory of what kinds of functions and divergences between distributions will benefit from adapting the mapping, nor a general discussion of how to adapt the function. 
+
+
+
+\bibliographystyle{abbrvnat}
+\bibliography{ref2}
+
+\appendix
+\onecolumn
+
+
+
+\section{Proofs of results}
+\label{ap:proofs}
+
+\input{app_proofs}
+
+\section{Experiment Details}\label[appendix]{app:impl_dets}
+
+\paragraph{Pre-processing and Train-Test Split.} Given a full data set $D = (X, Y)$ as defined in \cref{sec:theory}, we make a split into a train, ID test and OOD test set as follows. First, the OOD test set is formed by sorting and then splitting the data on a chosen feature. The remainder is randomly split into a train and an ID test set. All inputs are then standardized using the train set mean and standard deviation, and the outputs are all centred with the train set output mean. The random splits are independent across trials, giving the desired variability in train-test splits, as well as learned hyperparameters (see below).
+
+\paragraph{Basis functions.} All experiments use RBF basis functions to construct the feature map, $\varphi : \mathbb{R}^P \mapsto \mathbb{R}^Q$, with 
+\begin{align}
+    \varphi(x) = \Big(e^{-\frac{\| x-c_q \|^2_2}{2l}} \Big)_{q=1}^Q,
+\end{align}
+for basis centroids $\{c_q\}_{q=1}^Q$ where $c_q \in \mathbb{R}^P$ and a common lengthscale, $l$. The centroids are sampled independently as
+\begin{align}
+    c_q \sim \mathcal{N}(0_P, M),
+\end{align}
+with $M = \frac{1}{n_{train}} X_{train}^\top X_{train}$, the empirical covariance of the standardized training inputs. We denote the inputs, $X$, mapped to this basis by $\Phi_l$, where the subscript makes explicit the dependence on the learnable lengthscale.
+
+\paragraph{Learning hyperparameters.} The three learnable hyperparameters in our experiments are the observation noise, $\sigma$, the prior precision, $\alpha$, and the RBF lengthscale, $l$. They are chosen by gradient-based optimization of the train set marginal likelihood, given by
+\begin{align}
+    p(Y_{train}\mid X_{train}) = \mathcal{N}(0_{n_{train}}, \alpha^{-1}\Phi_{l, train} \Phi_{l, train}^\top + \sigma^2I_{n_{train}}),
+\end{align}
+and, for numerical stability, we minimise the negative log likelihood,
+\begin{align}
+    \mathcal{L}(\sigma, \alpha, l) = - \log p(Y_{train}\mid X_{train}).
+\end{align}
+To this end, we use the ADAM optimizer \citep{kingma2015adam} with default settings for a fixed 2000 gradient steps. 
+
+\paragraph{Posterior predictive.} Both the true and $T$-MFVI posterior predictive considered in our experiments are analytically tractable in the conjugate BLR setting. We distinguish the joint posterior predictive for a test set, $(X, Y)$ and the marginal one, for a test point, $(x,y)$.  The marginal true posterior predictive at an input, $x$, is given by
+\begin{align}
+    p(y \mid x, \mathcal{D}) &= \int p(y \mid \theta, x)\  p(\theta \mid \mathcal{D}) \ d\theta \\
+    & = \mathcal{N}(y ; \mu^\top x, x^\top \Sigma x + \sigma^2 ),
+\end{align}
+with $\mu$ and $\Sigma$ from \cref{equ:true_post}. The marginal $T$-MFVI posterior predictive is 
+\begin{align}
+    q_T(y \mid x, \mathcal{D}) &= \int p(y \mid \theta, x)\  q_T(\theta \mid \mathcal{D}) \ d\theta \\
+    & = \mathcal{N}(y ; {m^*}^\top x, Tx^\top S^* x + \sigma^2 ),
+\end{align}
+with $m^*$ and $S^*$ from \cref{eq:mfvi_optimal_mean,eq:mfvi_optimal_cov}.
+For the joint posterior predictives, we have 
+\begin{align}
+    p(Y \mid X, \mathcal{D}) &= \int p(Y \mid \theta, X)\  p(\theta \mid \mathcal{D}) \ d\theta \\
+    & = \mathcal{N}(Y ; X\mu, X\Sigma X^\top + \sigma^2 I ),
+\end{align}
+and
+\begin{align}
+    q_T(Y \mid X, \mathcal{D}) &= \int p(Y \mid \theta, X)\  q_T(\theta \mid \mathcal{D}) \ d\theta \\
+    & = \mathcal{N}(y ; Xm^*, TXS^*X^\top + \sigma^2 I).
+\end{align}
+
+\paragraph{Divergences.} A number of divergences are considered in \cref{fig:opt_T}, with the aim of quantifying how close the $T$-MFVI posterior predictive is to the true posterior predictive. While we write the divergences for the marginal posterior predictives here, they straightforwardly extend to the joint predictive setting. We use both the forward and reverse Kullback-Leibler (KL) divergence,
+\begin{align}
+    D_{KL}(p \|q_T) &= \int p(y, \mid x, \mathcal{D}) \log \frac{p(y, \mid x, \mathcal{D})}{q_T(y, \mid x, \mathcal{D})}dy, \\
+    D_{KL}(q_T \|p) &= \int q_T(y, \mid x, \mathcal{D}) \log \frac{q_T(y, \mid x, \mathcal{D})}{p(y, \mid x, \mathcal{D})}dy. \\
+\end{align}
+
+We also consider the standard $\alpha$-divergence at $\alpha=0.5$,
+\begin{align}
+    D_\alpha(p, q_T) =  4 \Bigg(1- \int\sqrt{p(y, \mid x, D)q_T(y, \mid x, D)} \ dy\Bigg),
+\end{align}
+making it proportional to Hellingers distance, and thus symmetric. Further, we make use of the 2-Wasserstein distance, which is analytic for two Gaussians and given by
+\begin{align}
+    W_2(p, q_T) = \inf_{\gamma \in \Gamma(p, q_T)}  \mathbb{E}_{(y, y') \sim \gamma}[\|y - y' \|^2]^{\frac{1}{2}},
+\end{align}
+
+with $\Gamma(p, q_T)$ the set of all couplings of the two posterior predictive distributions. 
+Lastly, for comparing marginal predictives, we consider the simple squared difference between predictive variances
+\begin{align}
+    (\sigma_p^2 - \sigma_{q_T}^2)^2 &\equiv (x^\top S^* x + \sigma^2 -x^\top  \Sigma x - \sigma^2)^2 \\
+    & =  (x^\top S^* x  -x^\top \Sigma x)^2,
+\end{align}
+which we generalize to the squared Frobenius norm
+\begin{align}
+    \|\Sigma_p - \Sigma_{q_T}\|_F^2 & \equiv \| X\Sigma X^\top + \sigma^2 I - TXS^*X^\top - \sigma^2 I\|_F^2 \\
+    &= \| X\Sigma X^\top - TXS^*X^\top \|_F^2, 
+\end{align}
+for comparing joint predictives.
+
+When considering the marginal posterior predictives for a given divergence, the marginal divergences are simply averaged across test points, reflecting a marginal per-data-point predictive divergence. For the joint posterior predictves, each test set simply gives one divergence between the two multivariate Gaussians. This is done for a grid of $100$ values $T$ (equally spaced on the log scale), and $T^*$ in \cref{fig:opt_T} is then found as the divergence minimiser on this grid.
+
+\section{Additional Experiment Results}\label[appendix]{app:more_res}
+
+Here we present experimental results following the set up of \Cref{app:impl_dets} and \cref{sec:experiments}, for additional UCI data sets. Analogous to \Cref{fig:opt_T}, \Cref{app:fig:opt_T1,app:fig:opt_T2} show the temperature minimising various measures of divergence between the true posterior predictive and the $T-$MFVI posterior predictive. % From these we see how, qualitatively, the pattern observed in \Cref{fig:opt_T} is present in all data sets. OOD requires higher temperature ... 
+
+\begin{figure}[t]
+  \centering
+  \setlength{\tabcolsep}{2pt} % horizontal padding between images
+  \begin{tabular}{cc}
+    \includegraphics[width=0.49\textwidth]{figs/uci/boston_violin.pdf} &
+    \includegraphics[width=0.49\textwidth]{figs/uci/concrete_violin.pdf} \\
+    \includegraphics[width=0.49\textwidth]{figs/uci/energy_violin.pdf} &
+    \includegraphics[width=0.49\textwidth]{figs/uci/power_violin.pdf} \\
+  \end{tabular}
+  \caption{Optimal temperatures for various measures of divergence are shown across independent train-test splits.}
+  \label{app:fig:opt_T1}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \setlength{\tabcolsep}{2pt} % horizontal padding between images
+  \begin{tabular}{cc}
+    \includegraphics[width=0.49\textwidth]{figs/uci/protein_violin.pdf} &
+    \includegraphics[width=0.49\textwidth]{figs/uci/wine_violin.pdf} \\
+    \includegraphics[width=0.49\textwidth]{figs/uci/yacht_violin.pdf} &
+    \includegraphics[width=0.49\textwidth]{figs/uci/naval_violin.pdf} \\
+  \end{tabular}
+  \caption{Optimal temperatures for various measures of divergence are shown across independent train-test splits.}
+  \label{app:fig:opt_T2}
+\end{figure}
+
+
+
+
+
+% \section{Additional Results}\label[appendix]{app:results}
+
+% \begin{table}[t]
+% \centering
+% \begin{tabular}{lrrrrrr}
+% \toprule
+% Dataset & n & d & avg\_mfvi\_post\_var & avg\_true\_post\_var & trace\_S\_opt & trace\_Sigma \\
+% \midrule
+% boston & 506 & 13 & 0.00039586 & 0.00040904 & 0.00025742 & 0.00089338 \\
+% energy & 768 & 9 & 0.0001695 & 0.00015264 & 0.00011734 & 1.0035 \\
+% concrete & 1030 & 8 & 0.00011098 & 0.00011114 & 7.7745e-05 & 0.00042853 \\
+% yacht & 308 & 6 & 0.00029839 & 0.00030906 & 0.00019543 & 0.0044649 \\
+% wine & 178 & 13 & 0.0010887 & 0.0011473 & 0.00073442 & 0.0021057 \\
+% protein & 45730 & 9 & 2.8906e-06 & 2.8812e-06 & 1.9681e-06 & 0.00018298 \\
+% kin8nm & 8192 & 8 & 1.3889e-05 & 1.3908e-05 & 9.7668e-06 & 9.7753e-06 \\
+% power & 9568 & 4 & 5.9721e-06 & 5.967e-06 & 4.181e-06 & 1.367e-05 \\
+% naval & 11934 & 17 & 1.8373e-05 & 1.662e-05 & 1.8095 & 2.9822 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Results across datasets.}
+% \label{tab:results}
+% \end{table}
+
+% \begin{table}[t]
+% \centering
+% \begin{tabular}{lrrrrrrrr}
+% \toprule
+% Dataset & n & d & avg\_train\_mfvi\_post\_var & avg\_train\_true\_post\_var & avg\_test\_mfvi\_post\_var & avg\_test\_true\_post\_var & trace\_S\_opt & trace\_Sigma \\
+% \midrule
+% boston & 506 & 13 & 0.00036722 & 0.00036719 & 0.00039771 & 0.00047403 & 0.00025742 & 0.00089338 \\
+% energy & 768 & 9 & 0.00016759 & 0.00014888 & 0.00016721 & 0.00015126 & 0.00011734 & 1.0035 \\
+% concrete & 1030 & 8 & 0.00011096 & 0.00011095 & 0.00011267 & 0.00011813 & 7.7745e-05 & 0.00042853 \\
+% yacht & 308 & 6 & 0.00027906 & 0.00027879 & 0.00029328 & 0.00028269 & 0.00019543 & 0.0044649 \\
+% wine & 178 & 13 & 0.0010483 & 0.0010481 & 0.0010088 & 0.0012663 & 0.00073442 & 0.0021057 \\
+% protein & 45730 & 9 & 2.8116e-06 & 2.8115e-06 & 2.932e-06 & 3.0333e-06 & 1.9681e-06 & 0.00018298 \\
+% kin8nm & 8192 & 8 & 1.3952e-05 & 1.3952e-05 & 1.418e-05 & 1.4201e-05 & 9.7668e-06 & 9.7753e-06 \\
+% power & 9568 & 4 & 5.9728e-06 & 5.9728e-06 & 5.8751e-06 & 5.9979e-06 & 4.181e-06 & 1.367e-05 \\
+% naval & 11934 & 17 & 1.8127e-05 & 1.6641e-05 & 1.808e-05 & 1.674e-05 & 1.8095 & 2.9822 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Results across datasets.}
+% \label{tab:results}
+% \end{table}
+
+% \subsection{Negative Log Likelihood Plots }
+
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.75\linewidth]{figs/uci/uci_divs_rbf_p=500_l=learned_nll.pdf}
+%     \caption{NLL plots for $q=500$}
+%     \label{fig:placeholder}
+% \end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.75\linewidth]{figs/uci/uci_divs_rbf_p=5000_l=learned_nll.pdf}
+%     \caption{NLL plots for $q=5000$}
+%     \label{fig:placeholder}
+% \end{figure}
+
+\end{document}
