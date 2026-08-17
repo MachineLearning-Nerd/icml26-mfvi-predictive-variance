@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "repository": "MachineLearning-Nerd/icml26-mfvi-predictive-variance",
+  "paper": {
+    "title": "Gaussian Mean Field Variational Inference can Overestimate Predictive Variance",
+    "authors": [
+      "James Odgers",
+      "Ben Riegler",
+      "Siddharth Swaroop",
+      "Vincent Fortuin"
+    ],
+    "arxiv": "2606.25745",
+    "arxiv_version": "v1",
+    "openreview": "RG7maF4bGu"
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "status": "verified_scoped_spherical_prior",
+      "paper_statement": "MFVI can underestimate posterior variance while overestimating predictive variance.",
+      "evidence": [
+        "outputs/independent_full_audit.json",
+        "outputs/synthetic_audit.json",
+        "repro/src/verify_mfvi.py"
+      ],
+      "scope": "144 synthetic systems and 9 UCI datasets under the spherical-prior setup; the nonspherical-prior control is negative."
+    },
+    {
+      "id": "C2",
+      "status": "verified_scoped_empirical_training_distribution",
+      "paper_statement": "Expected predictive variance is larger for MFVI on the training distribution.",
+      "evidence": [
+        "outputs/independent_full_audit.json",
+        "outputs/local_readback_gate.json",
+        "outputs/official_uci_trace_table.tex"
+      ],
+      "scope": "Positive finite synthetic and retained-UCI gaps; the empirical training-distribution assumption remains explicit."
+    },
+    {
+      "id": "C3",
+      "status": "verified_scoped_first_principal_direction",
+      "paper_statement": "The overestimation appears in concentrated directions.",
+      "evidence": [
+        "outputs/independent_full_audit.json",
+        "outputs/local_readback_gate.json",
+        "repro/src/verify_mfvi.py"
+      ],
+      "scope": "First principal direction in the declared prior/data setup; not an unrestricted all-priors claim."
+    }
+  ],
+  "official_code": {
+    "repository": "https://github.com/jamesacodgers/mfvi-cpe",
+    "commit": "98604c6e558127fb756529a2c9339c77ca1a9965",
+    "status": "externally_pinned_not_vendored",
+    "note": "The independent verifier does not import the official posterior implementation; the full-scale official output is retained and read back."
+  },
+  "publication_allowed": false,
+  "publication_policy": "Publish the scoped independent audit and retained full-scale evidence with external-code/data and prior/distribution limits; do not claim a fresh nine-dataset run, formal-proof replacement, score, or author endorsement."
+}

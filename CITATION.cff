@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If this audit or its evidence is useful, please cite the paper and this repository."
+title: "Gaussian Mean Field Variational Inference can Overestimate Predictive Variance — scoped reproduction audit"
+type: software
+version: "1.0.0"
+date-released: 2026-08-17
+repository-code: "https://github.com/MachineLearning-Nerd/icml26-mfvi-predictive-variance"
+url: "https://arxiv.org/abs/2606.25745"
+authors:
+  - family-names: Odgers
+    given-names: James
+  - family-names: Riegler
+    given-names: Ben
+  - family-names: Swaroop
+    given-names: Siddharth
+  - family-names: Fortuin
+    given-names: Vincent
+abstract: >
+  Clean-room audit and retained full-scale evidence record for Gaussian Mean
+  Field Variational Inference can Overestimate Predictive Variance. The audit
+  checks the spherical-prior mechanism, empirical training-distribution
+  comparison, and first-principal-direction result while preserving the
+  external-code and data boundary.
+keywords:
+  - mean-field variational inference
+  - predictive variance
+  - Bayesian linear regression
+  - clean-room reproduction
+preferred-citation:
+  type: article
+  title: "Gaussian Mean Field Variational Inference can Overestimate Predictive Variance"
+  authors:
+    - family-names: Odgers
+      given-names: James
+    - family-names: Riegler
+      given-names: Ben
+    - family-names: Swaroop
+      given-names: Siddharth
+    - family-names: Fortuin
+      given-names: Vincent
+  year: 2026
+  url: "https://arxiv.org/abs/2606.25745"
