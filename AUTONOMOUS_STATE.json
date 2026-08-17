@@ -22,7 +22,7 @@
     "C3": 1
   },
   "last_checkpoint": "2026-08-17T03:30:00Z",
-  "last_known_git_commit": "c530db5b210f41b3d09a7c0f85ac4bccf54f08a9",
+  "last_known_git_commit": "56ac30c36593e4789715db71a139d9280e1481ef",
   "publication_allowed": false,
   "compute_policy": "Use the committed independent audit and retained full-scale artifacts for ordinary verification; do not rerun the expensive official nine-dataset path during final-state checks.",
   "selection_rationale": "MFVI has a tractable Gaussian mechanism, 144 independent synthetic systems, nine retained UCI comparisons, explicit prior/distribution controls, and externally pinned official provenance.",
